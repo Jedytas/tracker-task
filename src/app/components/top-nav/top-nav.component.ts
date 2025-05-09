@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { UserProfile } from '../../models/interface';
 
-type Theme = 'blue' | 'pink' | 'black';
+type Theme = 'blue' | 'green' | 'black';
 
 @Component({
   selector: 'app-top-nav',
@@ -17,7 +17,7 @@ type Theme = 'blue' | 'pink' | 'black';
   styleUrl: './top-nav.component.scss'
 })
 export class TopNavComponent implements OnInit {
-  currentTheme: Theme = 'blue';
+  currentTheme: Theme = 'black';
 
   commonService = inject(CommonService);
   authService = inject(AuthService);

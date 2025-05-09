@@ -39,15 +39,16 @@ body.theme-blue {
   --border-color: #bbdefb;
 }
 
-/* Light Pink Theme */
-body.theme-pink {
-  --primary-color: #e91e63;
-  --accent-color: #f48fb1;
-  --background-color: #fce4ec;
-  --card-background: #ffffff;
-  --text-color: #880e4f;
-  --border-color: #f8bbd0;
+/* Green Theme */
+body.theme-green {
+  --primary-color: #4caf50;      /* Основной зеленый цвет */
+  --accent-color: #81c784;       /* Светло-зеленый акцент */
+  --background-color: #e8f5e9;   /* Очень светлый зеленый фон */
+  --card-background: #ffffff;    /* Белый фон для карточек */
+  --text-color: #388e3c;         /* Темно-зеленый текст */
+  --border-color: #a5d6a7;       /* Светло-зеленый цвет для границ */
 }
+
 
 /* Black Theme */
 body.theme-black {
@@ -132,8 +133,8 @@ body.theme-black {
   background-color: #1976d2;
 }
 
-.theme-pink-option {
-  background-color: #e91e63;
+.theme-green-option {
+  background-color: #4caf50;
 }
 
 .theme-black-option {

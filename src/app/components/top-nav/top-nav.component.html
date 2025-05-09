@@ -6,22 +6,22 @@
       
       <div class="ms-auto theme-selector">
         <div 
+          class="theme-option theme-green-option" 
+          [class.active]="currentTheme === 'green'"
+          (click)="setTheme('green')" 
+          matTooltip="Light Green Theme">
+        </div>
+        <div 
           class="theme-option theme-blue-option" 
           [class.active]="currentTheme === 'blue'"
           (click)="setTheme('blue')" 
           matTooltip="Light Blue Theme">
         </div>
         <div 
-          class="theme-option theme-pink-option" 
-          [class.active]="currentTheme === 'pink'"
-          (click)="setTheme('pink')" 
-          matTooltip="Light Pink Theme">
-        </div>
-        <div 
           class="theme-option theme-black-option" 
           [class.active]="currentTheme === 'black'"
           (click)="setTheme('black')" 
-          matTooltip="Light black Theme">
+          matTooltip="Light Black Theme">
         </div>
 
         <span class="navbar-brand user-menu" *ngIf="authService.isLoggedIn()" [matMenuTriggerFor]="userMenu">
