@@ -49,15 +49,16 @@ body.theme-pink {
   --border-color: #f8bbd0;
 }
 
-/* Light Purple Theme */
-body.theme-purple {
-  --primary-color: #673ab7;
-  --accent-color: #b39ddb;
-  --background-color: #ede7f6;
-  --card-background: #ffffff;
-  --text-color: #4a148c;
-  --border-color: #d1c4e9;
+/* Black Theme */
+body.theme-black {
+  --primary-color: #121212;   /* Темный оттенок для основного цвета */
+  --accent-color: #616161;    /* Серый для акцентов */
+  --background-color: #e0e0e0; /* Черный фон */
+  --card-background: #333333;  /* Темно-серый фон для карт */
+  --text-color: #121212;      /* Светлый текст */
+  --border-color: #424242;    /* Темно-серый для границ */
 }
+
 
 /* Apply theme variables */
 
@@ -135,8 +136,8 @@ body.theme-purple {
   background-color: #e91e63;
 }
 
-.theme-purple-option {
-  background-color: #673ab7;
+.theme-black-option {
+  background-color: #121212;
 }
 
 .task-card {

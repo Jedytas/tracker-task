@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { UserProfile } from '../../models/interface';
 
-type Theme = 'blue' | 'pink' | 'purple';
+type Theme = 'blue' | 'pink' | 'black';
 
 @Component({
   selector: 'app-top-nav',
@@ -32,7 +32,6 @@ export class TopNavComponent implements OnInit {
     this.getProfile();
   }
 
-
   getProfile(){
     if (this.authService.isLoggedIn()) {
       this.authService.getUserProfile().subscribe({
@@ -46,7 +45,6 @@ export class TopNavComponent implements OnInit {
     }
   }
 
-
   logout() {
     this.authService.logout();
     this.toastr.info('You have been logged out.');
@@ -57,7 +55,7 @@ export class TopNavComponent implements OnInit {
     if (savedTheme) {
       this.setTheme(savedTheme);
     } else {
-      this.setTheme('blue');
+      this.setTheme('black');
     }
   }
 

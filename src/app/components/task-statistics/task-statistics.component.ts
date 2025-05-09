@@ -21,8 +21,6 @@ interface Task {
 })
 export class TaskStatisticsComponent {
 
-
-
   taskService= inject(TaskService);
   commonService= inject(CommonService);
 

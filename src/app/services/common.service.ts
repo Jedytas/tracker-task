@@ -7,9 +7,7 @@ import { Task } from '../models/interface';
 export class CommonService {
 
   constructor() { }
-
-  // isLoggedIn = signal(false);
-
+  
   userName= signal('');
   tasks= signal<Task[]>([]);
 

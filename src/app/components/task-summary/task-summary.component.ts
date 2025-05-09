@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input'; 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
-
+import { CommonService } from '../../services/common.service'; 
 
 interface Task {
   id: number;
@@ -23,17 +23,17 @@ export class TaskSummaryComponent {
 
   taskSummary: string = '';
   showSummary: boolean = false;
+  commonService = inject(CommonService);
   tasks: Task[] = [];
 
-
+ 
   generateSummary() {
-    // Dummy summary data for now - this will be replaced with AI-generated content later
-    const completedCount = this.completedTasks;
-    const pendingCount = this.pendingTasks;
-    const completionRate = this.tasks.length > 0 ? Math.round((completedCount / this.tasks.length) * 100) : 0;
-    
-    this.taskSummary = `You have completed ${completedCount} out of ${this.tasks.length} tasks (${completionRate}% completion rate). You still have ${pendingCount} tasks pending. ${this.getMotivationalMessage(completionRate)}`;
-    
+    const total = this.commonService.totalTasks();
+    const completed = this.commonService.completedTasks();
+    const pending = this.commonService.pendingTasks(); 
+    const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+    this.taskSummary = `You have completed ${completed} out of ${total} tasks (${completionRate}% completion rate). You still have ${pending} tasks pending. ${this.getMotivationalMessage(completionRate)}`;
     this.showSummary = true;
   }
 
