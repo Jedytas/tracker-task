@@ -8,7 +8,7 @@ import { Task, TaskStatistics } from '../models/interface';
 })
 export class TaskService {
 
-  private baseUrl = 'backend-tracker-mauve.vercel.app/api/task';
+  private baseUrl = 'https://backend-tracker-mauve.vercel.app/api/task';
   http= inject(HttpClient);
 
   constructor() { }

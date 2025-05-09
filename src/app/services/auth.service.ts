@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
 
-  private baseUrl = 'backend-tracker-mauve.vercel.app/api/auth';
+  private baseUrl = 'https://backend-tracker-mauve.vercel.app/api/auth';
 
   private accessTokenKey = 'accessToken';
   private refreshTokenKey = 'refreshToken';
