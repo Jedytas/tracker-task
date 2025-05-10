@@ -2,8 +2,8 @@ export interface RegisterPayload {
   name: string;
   email: string;
   password: string;
+  confirmPassword: string; 
 }
-
 export interface LoginPayload {
   email: string;
   password: string;
@@ -31,13 +31,12 @@ export interface UserProfile {
   date: string;
 }
 
-
 export interface Task {
-  _id: string; // Matches MongoDB's `_id`
+  _id: string; 
   title: string;
-  done: boolean; // Indicates if the task is marked as done
+  done: boolean;
   createdAt: Date;
-  user: string; // User ID associated with the task
+  user: string; 
 }
 
 export interface TaskStatistics {

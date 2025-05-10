@@ -7,7 +7,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const accessToken = authService.getAccessToken();
 
-  // Не добавляем токен к запросам на /login и /register
   const skipAuth =
     req.url.includes('/login') || req.url.includes('/register') || req.method === 'OPTIONS';
 

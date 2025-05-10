@@ -9,6 +9,8 @@ import { Task, TaskStatistics } from '../models/interface';
 export class TaskService {
 
   private baseUrl = 'https://backend-tracker-mauve.vercel.app/api/task';
+  //private baseUrl = 'http://localhost:5000/api/task';
+
   http= inject(HttpClient);
 
   constructor() { }
@@ -17,17 +19,14 @@ export class TaskService {
     return this.http.get<Task[]>(`${this.baseUrl}/list`);
   }
 
-  // Add a new task
   addTask(title: string): Observable<Task> {
     return this.http.post<Task>(`${this.baseUrl}/add`, { title });
   }
 
-  // Mark a task as done or not done
   updateTaskStatus(taskId: string, done: boolean): Observable<{ message: string; task: Task }> {
     return this.http.patch<{ message: string; task: Task }>(`${this.baseUrl}/done/${taskId}`, { done });
   }
 
-  // Delete a task
   deleteTask(taskId: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.baseUrl}/delete/${taskId}`);
   }
