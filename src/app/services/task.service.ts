@@ -8,8 +8,8 @@ import { Task, TaskStatistics } from '../models/interface';
 })
 export class TaskService {
 
-  private baseUrl = 'https://backend-tracker-mauve.vercel.app/api/task';
-  //private baseUrl = 'http://localhost:5000/api/task';
+  //private baseUrl = 'https://backend-tracker-mauve.vercel.app/api/task';
+  private baseUrl = 'http://localhost:5000/api/task';
 
   http= inject(HttpClient);
 
@@ -19,12 +19,16 @@ export class TaskService {
     return this.http.get<Task[]>(`${this.baseUrl}/list`);
   }
 
-  addTask(title: string): Observable<Task> {
-    return this.http.post<Task>(`${this.baseUrl}/add`, { title });
+  addTask(title: string, deadline?: Date, description?: string, category?: string, priority?: string): Observable<Task> {
+    return this.http.post<Task>(`${this.baseUrl}/add`, { title, deadline, description, category, priority });
   }
 
   updateTaskStatus(taskId: string, done: boolean): Observable<{ message: string; task: Task }> {
     return this.http.patch<{ message: string; task: Task }>(`${this.baseUrl}/done/${taskId}`, { done });
+  }
+
+  updateTask(taskId: string, taskData: Partial<Task>): Observable<{ message: string; task: Task }> {
+    return this.http.patch<{ message: string; task: Task }>(`${this.baseUrl}/update/${taskId}`, taskData);
   }
 
   deleteTask(taskId: string): Observable<{ message: string }> {

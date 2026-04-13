@@ -1,0 +1,309 @@
+.chart-container {
+  padding: 1rem 0;
+}
+
+.custom-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  flex-wrap: wrap;
+  gap: 12px;
+  
+  mat-card-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0 !important;
+    flex: 1 1 auto;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+}
+
+.header-actions {
+  margin-left: auto;
+  
+  mat-button-toggle-group {
+    mat-button-toggle {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+.chart-bars {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 200px;
+  padding: 0 1rem;
+  border-bottom: 2px solid #e0e0e0;
+  gap: 8px;
+}
+
+.bar-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.bar-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.bar-stack {
+  width: 100%;
+  max-width: 60px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 2px;
+  position: relative;
+  height: 180px;
+}
+
+.bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.3s ease;
+  min-height: 2px;
+  
+  &:hover {
+    opacity: 0.8;
+    transform: scaleX(1.05);
+  }
+}
+
+.bar-completed {
+  background: linear-gradient(180deg, #4caf50 0%, #66bb6a 100%);
+}
+
+.bar-pending {
+  background: linear-gradient(180deg, #ff9800 0%, #ffa726 100%);
+}
+
+.bar-value {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #666;
+  margin-top: 4px;
+}
+
+.bar-label {
+  font-size: 0.75rem;
+  color: #666;
+  text-align: center;
+  font-weight: 500;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding-top: 1rem;
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      
+      &.completed {
+        background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+      }
+      
+      &.pending {
+        background: linear-gradient(135deg, #ff9800 0%, #ffa726 100%);
+      }
+    }
+    
+    small {
+      font-size: 0.75rem;
+      color: #666;
+    }
+  }
+}
+
+.chart-summary {
+  .summary-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+    
+    .fw-bold {
+      font-size: 1.25rem;
+    }
+    
+    small {
+      font-size: 0.75rem;
+    }
+  }
+}
+
+.no-data-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #999;
+  
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1rem;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .custom-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 8px;
+    
+    mat-card-title {
+      font-size: 1.25rem;
+      font-weight: 500;
+      
+      mat-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+    }
+    
+    .header-actions {
+      margin-left: 0;
+      width: auto;
+      
+      mat-button-toggle-group {
+        width: auto;
+        display: inline-flex;
+        
+        mat-button-toggle {
+          font-size: 0.75rem;
+          padding: 0px 8px;
+          min-height: 20px;
+          line-height: 20px;
+        }
+      }
+    }
+  }
+  
+  .chart-bars {
+    height: 150px;
+    padding: 0 0.5rem;
+    gap: 4px;
+  }
+  
+  .bar-stack {
+    max-width: 40px;
+    height: 130px;
+  }
+  
+  .bar-value {
+    font-size: 0.7rem;
+  }
+  
+  .bar-label {
+    font-size: 0.65rem;
+  }
+  
+  .chart-legend {
+    gap: 12px;
+    
+    .legend-item {
+      gap: 6px;
+      
+      .legend-color {
+        width: 12px;
+        height: 12px;
+      }
+      
+      small {
+        font-size: 0.7rem;
+      }
+    }
+  }
+  
+  .chart-summary {
+    .summary-item {
+      gap: 8px;
+      
+      mat-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+      
+      .fw-bold {
+        font-size: 1.1rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .custom-header {
+    mat-card-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    
+    .header-actions {
+      mat-button-toggle-group {
+        mat-button-toggle {
+          font-size: 0.7rem;
+          padding: 0px 6px;
+          min-height: 18px;
+          line-height: 18px;
+        }
+      }
+    }
+  }
+  
+  .chart-bars {
+    height: 120px;
+    padding: 0 0.25rem;
+    gap: 2px;
+  }
+  
+  .bar-stack {
+    max-width: 30px;
+    height: 100px;
+  }
+  
+  .bar-value {
+    font-size: 0.65rem;
+  }
+  
+  .bar-label {
+    font-size: 0.6rem;
+  }
+  
+  mat-card-content {
+    padding: 0.5rem !important;
+  }
+}

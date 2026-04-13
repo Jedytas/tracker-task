@@ -1,0 +1,62 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>
+      <div class="d-flex align-items-center">
+        <mat-icon class="me-2 text-primary">bolt</mat-icon>
+        Quick Actions
+      </div>
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="p-3">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <button 
+          mat-raised-button 
+          class="action-btn today-btn w-100"
+          (click)="scrollToTaskList()"
+          [matBadge]="getTodayTasks()"
+          [matBadgeHidden]="getTodayTasks() === 0"
+          matBadgeColor="primary"
+        >
+          <div class="btn-content">
+            <mat-icon>today</mat-icon>
+            <span>Today's Tasks</span>
+            <small class="text-muted">Due today</small>
+          </div>
+        </button>
+      </div>
+      <div class="col-md-4">
+        <button 
+          mat-raised-button 
+          class="action-btn overdue-btn w-100"
+          (click)="scrollToTaskList()"
+          [matBadge]="getOverdueTasks()"
+          [matBadgeHidden]="getOverdueTasks() === 0"
+          matBadgeColor="warn"
+        >
+          <div class="btn-content">
+            <mat-icon>warning</mat-icon>
+            <span>Overdue</span>
+            <small class="text-muted">Past deadline</small>
+          </div>
+        </button>
+      </div>
+      <div class="col-md-4">
+        <button 
+          mat-raised-button 
+          class="action-btn priority-btn w-100"
+          (click)="scrollToTaskList()"
+          [matBadge]="getHighPriorityTasks()"
+          [matBadgeHidden]="getHighPriorityTasks() === 0"
+          matBadgeColor="accent"
+        >
+          <div class="btn-content">
+            <mat-icon>priority_high</mat-icon>
+            <span>High Priority</span>
+            <small class="text-muted">Important tasks</small>
+          </div>
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

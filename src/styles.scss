@@ -1,6 +1,18 @@
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body { 
+  height: 100%; 
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 
 /* Import Bootstrap CSS */
 @import 'bootstrap/dist/css/bootstrap.min.css';
@@ -50,14 +62,366 @@ body.theme-green {
 }
 
 
-/* Black Theme */
+/* Black Theme (Dark Mode) */
 body.theme-black {
-  --primary-color: #121212;   /* Темный оттенок для основного цвета */
-  --accent-color: #616161;    /* Серый для акцентов */
-  --background-color: #e0e0e0; /* Черный фон */
-  --card-background: #333333;  /* Темно-серый фон для карт */
-  --text-color: #121212;      /* Светлый текст */
-  --border-color: #424242;    /* Темно-серый для границ */
+  --primary-color: #2f81f7;          /* Синий для акцентов */
+  --accent-color: #1f6feb;           /* Темно-синий акцент */
+  --background-color: #121212;       /* Темный фон */
+  --card-background: #1e1e1e;        /* Темно-серый фон для карт */
+  --text-color: #e0e0e0;             /* Светлый текст */
+  --border-color: #333333;           /* Темно-серый для границ */
+  --button-color: #238636;           /* GitHub зеленый для кнопок */
+  --button-hover: #2ea043;           /* GitHub зеленый hover */
+  
+  /* Material Components Dark Theme */
+  .mat-mdc-card {
+    background-color: var(--card-background) !important;
+    color: var(--text-color) !important;
+  }
+  
+  .mat-mdc-card-title,
+  .mat-mdc-card-content {
+    color: var(--text-color) !important;
+  }
+  
+  .mat-icon {
+    color: var(--text-color) !important;
+  }
+  
+  .text-primary {
+    color: var(--primary-color) !important;
+  }
+  
+  .text-muted {
+    color: #9e9e9e !important;
+  }
+  
+  .mat-mdc-form-field {
+    color: var(--text-color) !important;
+  }
+  
+  .mat-mdc-text-field-wrapper {
+    background-color: #2a2a2a !important;
+  }
+  
+  input, textarea, select {
+    color: var(--text-color) !important;
+    background-color: #2a2a2a !important;
+  }
+  
+  .list-group-item {
+    background-color: var(--card-background) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+  }
+  
+  .task-item:hover {
+    background-color: #252525 !important;
+    border-left-color: var(--button-color) !important;
+  }
+  
+  .task-item.completed {
+    border-left-color: var(--button-color) !important;
+  }
+  
+  .bg-light {
+    background-color: #2a2a2a !important;
+  }
+  
+  .section-title {
+    color: var(--text-color) !important;
+  }
+  
+  small {
+    color: #9e9e9e !important;
+  }
+  
+  .mat-mdc-button, .mat-mdc-icon-button {
+    color: var(--text-color) !important;
+  }
+  
+  .mat-mdc-raised-button {
+    background-color: var(--button-color) !important;
+    color: #ffffff !important;
+    
+    &:hover:not(:disabled) {
+      background-color: var(--button-hover) !important;
+    }
+  }
+  
+  .mat-mdc-raised-button[color="primary"] {
+    background-color: var(--button-color) !important;
+  }
+  
+  .mat-mdc-raised-button[color="accent"] {
+    background-color: var(--button-color) !important;
+  }
+  
+  .mat-mdc-raised-button[color="warn"] {
+    background-color: #da3633 !important;
+    
+    &:hover:not(:disabled) {
+      background-color: #b62324 !important;
+    }
+  }
+  
+  button[mat-raised-button]:not([color]) {
+    background-color: var(--button-color) !important;
+    color: #ffffff !important;
+  }
+  
+  .empty-state {
+    color: #9e9e9e !important;
+    border-color: var(--border-color) !important;
+  }
+  
+  .navbar {
+    background-color: #1e1e1e !important;
+  }
+  
+  .mat-mdc-menu-panel {
+    background-color: #1e1e1e !important;
+  }
+  
+  .mat-mdc-menu-item {
+    color: var(--text-color) !important;
+  }
+  
+  .mat-divider {
+    border-top-color: var(--border-color) !important;
+  }
+  
+  .mat-mdc-checkbox label {
+    color: var(--text-color) !important;
+  }
+  
+  .mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background {
+    background-color: var(--button-color) !important;
+    border-color: var(--button-color) !important;
+  }
+  
+  .badge {
+    opacity: 0.9;
+  }
+  
+  .completed-task {
+    color: #757575 !important;
+  }
+  
+  .mat-mdc-button-toggle-group {
+    background-color: #2a2a2a !important;
+  }
+  
+  .mat-mdc-button-toggle {
+    color: var(--text-color) !important;
+  }
+  
+  .mat-mdc-button-toggle-checked {
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+  }
+  
+  .calendar-day {
+    background-color: #2a2a2a !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+  }
+  
+  .calendar-day:hover {
+    background-color: #333333 !important;
+  }
+  
+  .calendar-day.today {
+    background-color: #1c2d41 !important;
+    border-color: var(--primary-color) !important;
+  }
+  
+  .calendar-day.today .day-number {
+    color: var(--primary-color) !important;
+  }
+  
+  .calendar-day.has-deadline {
+    background-color: #3a2a1a !important;
+    border-color: #ff9800 !important;
+  }
+  
+  .task-indicator {
+    background-color: var(--primary-color) !important;
+  }
+  
+  .weekday-header {
+    color: #9e9e9e !important;
+  }
+  
+  .bar-completed {
+    background: linear-gradient(180deg, #66bb6a 0%, #4caf50 100%) !important;
+  }
+  
+  .bar-pending {
+    background: linear-gradient(180deg, #ffa726 0%, #ff9800 100%) !important;
+  }
+  
+  .bar-value, .bar-label {
+    color: #9e9e9e !important;
+  }
+  
+  .no-data-message {
+    color: #757575 !important;
+  }
+  
+  /* Productivity Chart Icons */
+  .chart-summary .text-success {
+    color: #4caf50 !important;
+  }
+  
+  .chart-summary .text-warning {
+    color: #ff9800 !important;
+  }
+  
+  /* Task Statistics Icons */
+  .mini-stat-card .text-danger {
+    color: #f44336 !important;
+  }
+  
+  .mini-stat-card .text-info {
+    color: #29b6f6 !important;
+  }
+  
+  .mini-stat-card .text-purple {
+    color: #ab47bc !important;
+  }
+  
+  .mini-stat-card .text-secondary {
+    color: #9e9e9e !important;
+  }
+  
+  .stat-card .text-primary {
+    color: var(--primary-color) !important;
+  }
+  
+  .stat-card .text-success {
+    color: #4caf50 !important;
+  }
+  
+  .stat-card .text-warning {
+    color: #ff9800 !important;
+  }
+  
+  /* Add Task Component */
+  .mat-mdc-form-field-label,
+  .mat-mdc-select-value,
+  .mat-mdc-select-arrow {
+    color: var(--text-color) !important;
+  }
+  
+  .mat-mdc-option {
+    color: var(--text-color) !important;
+  }
+  
+  .mat-mdc-select-panel {
+    background-color: #2a2a2a !important;
+  }
+  
+  .mat-mdc-input-element,
+  .mat-mdc-input-element::placeholder {
+    color: var(--text-color) !important;
+  }
+  
+  .mat-mdc-form-field-hint,
+  .mat-mdc-form-field-error {
+    color: #9e9e9e !important;
+  }
+  
+  .mat-mdc-select-placeholder {
+    color: #9e9e9e !important;
+  }
+  
+  .mat-mdc-floating-label,
+  .mdc-floating-label {
+    color: var(--text-color) !important;
+  }
+  
+  .mat-mdc-form-field-label-wrapper label {
+    color: var(--text-color) !important;
+  }
+  
+  .mat-mdc-text-field-wrapper .mat-mdc-form-field-label {
+    color: var(--text-color) !important;
+  }
+  
+  /* Task Statistics Component */
+  .stat-card {
+    background-color: #2a2a2a !important;
+  }
+  
+  .mini-stat-card {
+    background-color: #2a2a2a !important;
+    border-color: var(--border-color) !important;
+  }
+  
+  .fw-bold {
+    color: var(--text-color) !important;
+  }
+  
+  h4 {
+    color: var(--text-color) !important;
+  }
+  
+  .progress {
+    background-color: #2a2a2a !important;
+  }
+  
+  /* Task Summary Component */
+  .summary-content {
+    background-color: #2a2a2a !important;
+    color: var(--text-color) !important;
+    border-left-color: var(--button-color) !important;
+  }
+  
+  .summary-content p {
+    color: var(--text-color) !important;
+  }
+  
+  /* Modal Dialogs */
+  .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+  }
+  
+  .modal-dialog mat-card {
+    background-color: var(--card-background) !important;
+    color: var(--text-color) !important;
+  }
+  
+  .modal-dialog mat-card-title {
+    color: var(--text-color) !important;
+  }
+  
+  .settings-section h6 {
+    color: var(--text-color) !important;
+  }
+  
+  .settings-section p,
+  .settings-section small {
+    color: #9e9e9e !important;
+  }
+  
+  /* Login Page Theme Selector */
+  .theme-selector-login button {
+    background-color: rgba(30, 30, 30, 0.9) !important;
+    color: var(--text-color) !important;
+    
+    &:hover {
+      background-color: rgba(30, 30, 30, 1) !important;
+    }
+  }
+  
+  .theme-label {
+    color: var(--text-color) !important;
+  }
+  
+  .fw-bold {
+    font-weight: 600 !important;
+  }
 }
 
 
@@ -237,4 +601,66 @@ body.theme-black {
 
 mat-card{
   min-height: 218px;
+}
+
+/* Global Modal Fixes for Mobile */
+.modal-dialog {
+  box-sizing: border-box;
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  mat-card {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  mat-card-content {
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+  
+  .mat-mdc-form-field {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-dialog {
+    width: calc(100% - 20px) !important;
+    padding: 0 10px;
+    
+    mat-card {
+      padding: 16px !important;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .modal-dialog {
+    width: calc(100% - 16px) !important;
+    padding: 0 8px;
+    max-height: 95vh;
+    
+    mat-card {
+      padding: 12px !important;
+    }
+    
+    mat-card-title {
+      font-size: 1.1rem !important;
+    }
+    
+    mat-card-actions {
+      padding: 8px !important;
+      
+      button {
+        font-size: 0.9rem !important;
+        padding: 8px 16px !important;
+      }
+    }
+  }
 }

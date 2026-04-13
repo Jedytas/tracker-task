@@ -34,9 +34,14 @@ export interface UserProfile {
 export interface Task {
   _id: string; 
   title: string;
+  description?: string;
+  category?: string;
+  priority?: string;
   done: boolean;
-  createdAt: Date;
-  user: string; 
+  date: Date;
+  user: string;
+  deadline?: Date;
+  completedDate?: Date;
 }
 
 export interface TaskStatistics {

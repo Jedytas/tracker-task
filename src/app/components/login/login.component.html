@@ -1,27 +1,70 @@
 <div class="landing-page">
+    <!-- Theme and Language Selectors -->
+    <div class="theme-selector-login">
+      <button mat-icon-button [matMenuTriggerFor]="themeMenu" [matTooltip]="languageService.currentLanguage() === 'ru' ? 'Сменить тему' : 'Change Theme'">
+        <mat-icon>palette</mat-icon>
+      </button>
+      <mat-menu #themeMenu="matMenu">
+        <div class="theme-menu-section">
+          <div class="theme-label">{{ languageService.currentLanguage() === 'ru' ? 'Выберите тему' : 'Choose Theme' }}</div>
+          <div class="theme-options">
+            <div 
+              class="theme-option theme-green-option" 
+              [class.active]="currentTheme === 'green'"
+              (click)="setTheme('green')" 
+              [matTooltip]="languageService.currentLanguage() === 'ru' ? 'Светло-зелёная тема' : 'Light Green Theme'">
+            </div>
+            <div 
+              class="theme-option theme-blue-option" 
+              [class.active]="currentTheme === 'blue'"
+              (click)="setTheme('blue')" 
+              [matTooltip]="languageService.currentLanguage() === 'ru' ? 'Светло-синяя тема' : 'Light Blue Theme'">
+            </div>
+            <div 
+              class="theme-option theme-black-option" 
+              [class.active]="currentTheme === 'black'"
+              (click)="setTheme('black')" 
+              [matTooltip]="languageService.currentLanguage() === 'ru' ? 'Тёмная тема' : 'Dark Theme'">
+            </div>
+          </div>
+        </div>
+      </mat-menu>
+      
+      <button mat-icon-button [matMenuTriggerFor]="langMenu" [matTooltip]="languageService.currentLanguage() === 'ru' ? 'Сменить язык' : 'Change Language'" class="ms-2">
+        <mat-icon>language</mat-icon>
+      </button>
+      <mat-menu #langMenu="matMenu">
+        <button mat-menu-item (click)="languageService.setLanguage('en')">
+          <span [class.fw-bold]="languageService.currentLanguage() === 'en'">English</span>
+        </button>
+        <button mat-menu-item (click)="languageService.setLanguage('ru')">
+          <span [class.fw-bold]="languageService.currentLanguage() === 'ru'">Русский</span>
+        </button>
+      </mat-menu>
+    </div>
+    
     <div class="container py-5">
       <div class="row justify-content-center">
         <div class="col-lg-8 text-center mb-5">
-          <h1 class="display-4 mb-3">Welcome to Task Tracker</h1>
+          <h1 class="display-4 mb-3">{{ languageService.t('login.welcome') }}</h1>
           <p class="lead mb-4">
-            A modern, intuitive task management solution designed to boost your productivity
-            and help you stay organized.
+            {{ languageService.t('login.description') }}
           </p>
           <div class="features row g-4 mb-5">
             <div class="col-md-4">
               <mat-icon class="feature-icon">check_circle</mat-icon>
-              <h5>Easy Task Management</h5>
-              <p>Add, complete, and track tasks with a simple interface</p>
+              <h5>{{ languageService.t('login.easyManagement') }}</h5>
+              <p>{{ languageService.t('login.easyManagementDesc') }}</p>
             </div>
             <div class="col-md-4">
               <mat-icon class="feature-icon">palette</mat-icon>
-              <h5>Customizable Themes</h5>
-              <p>Choose from beautiful themes to match your style</p>
+              <h5>{{ languageService.t('login.customThemes') }}</h5>
+              <p>{{ languageService.t('login.customThemesDesc') }}</p>
             </div>
             <div class="col-md-4">
               <mat-icon class="feature-icon">insights</mat-icon>
-              <h5>Progress Tracking</h5>
-              <p>Visual statistics to monitor your productivity</p>
+              <h5>{{ languageService.t('login.progressTracking') }}</h5>
+              <p>{{ languageService.t('login.progressTrackingDesc') }}</p>
             </div>
           </div>
         </div>
@@ -29,31 +72,31 @@
         <div class="col-md-6 col-lg-4">
           <mat-card appearance="outlined" class="login-card">
             <mat-card-header class="justify-content-center">
-              <mat-card-title>Login to Get Started</mat-card-title>
+              <mat-card-title>{{ languageService.t('login.loginTitle') }}</mat-card-title>
             </mat-card-header>
             <mat-card-content class="p-4">
               <form *ngIf="!isRegistering" (ngSubmit)="login()">
                 <mat-form-field appearance="outline" class="w-100 mb-3">
-                  <mat-label>Email</mat-label>
+                  <mat-label>{{ languageService.t('login.email') }}</mat-label>
                   <input 
                     matInput 
                     [(ngModel)]="loginForm.email" 
                     name="email"
                     type="email" 
-                    placeholder="Enter your email"
+                    [placeholder]="languageService.t('login.email')"
                     required
                   >
                   <mat-icon matSuffix>email</mat-icon>
                 </mat-form-field>
                 
                 <mat-form-field appearance="outline" class="w-100 mb-3">
-                  <mat-label>Password</mat-label>
+                  <mat-label>{{ languageService.t('login.password') }}</mat-label>
                   <input 
                     matInput 
                     [(ngModel)]="loginForm.password" 
                     name="password"
                     type="password" 
-                    placeholder="Enter your password"
+                    [placeholder]="languageService.t('login.password')"
                     required
                   >
                   <mat-icon matSuffix>lock</mat-icon>
@@ -65,72 +108,72 @@
                   class="w-100"
                   type="submit"
                 >
-                  Login
+                  {{ languageService.t('login.loginButton') }}
                 </button>
 
                 <mat-divider class="my-4"></mat-divider>
 
                 <div class="text-center mt-3">
-                    <p class="mb-0">Don't have an account?</p>
+                    <p class="mb-0">{{ languageService.t('login.noAccount') }}</p>
                     <button 
                       mat-button 
                       color="primary" 
                       type="button"
                       (click)="toggleRegister()"
                     >
-                      Create one now
+                      {{ languageService.t('login.createAccount') }}
                     </button>
                   </div>
               </form>
 
               <form *ngIf="isRegistering" (ngSubmit)="register()">
                 <mat-form-field appearance="outline" class="w-100 mb-3">
-                  <mat-label>Full Name</mat-label>
+                  <mat-label>{{ languageService.t('login.fullName') }}</mat-label>
                   <input 
                     matInput 
                     [(ngModel)]="registerForm.name" 
                     name="name"
                     type="text" 
-                    placeholder="Enter your full name"
+                    [placeholder]="languageService.t('login.fullName')"
                     required
                   >
                   <mat-icon matSuffix>person</mat-icon>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="w-100 mb-3">
-                  <mat-label>Email</mat-label>
+                  <mat-label>{{ languageService.t('login.email') }}</mat-label>
                   <input 
                     matInput 
                     [(ngModel)]="registerForm.email" 
                     name="email"
                     type="email" 
-                    placeholder="Enter your email"
+                    [placeholder]="languageService.t('login.email')"
                     required
                   >
                   <mat-icon matSuffix>email</mat-icon>
                 </mat-form-field>
                 
                 <mat-form-field appearance="outline" class="w-100 mb-3">
-                  <mat-label>Password</mat-label>
+                  <mat-label>{{ languageService.t('login.password') }}</mat-label>
                   <input 
                     matInput 
                     [(ngModel)]="registerForm.password" 
                     name="password"
                     type="password" 
-                    placeholder="Create a password"
+                    [placeholder]="languageService.t('login.password')"
                     required
                   >
                   <mat-icon matSuffix>lock</mat-icon>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="w-100 mb-3">
-                  <mat-label>Confirm Password</mat-label>
+                  <mat-label>{{ languageService.t('login.confirmPassword') }}</mat-label>
                   <input 
                     matInput 
                     [(ngModel)]="registerForm.confirmPassword" 
                     name="confirmPassword"
                     type="password" 
-                    placeholder="Confirm your password"
+                    [placeholder]="languageService.t('login.confirmPassword')"
                     required
                   >
                   <mat-icon matSuffix>lock_clock</mat-icon>
@@ -142,20 +185,20 @@
                   class="w-100"
                   type="submit"
                 >
-                  Create Account
+                  {{ languageService.t('login.register') }}
                 </button>
 
                 <mat-divider class="my-4"></mat-divider>
 
                 <div class="text-center mt-3">
-                  <p class="mb-0">Already have an account?</p>
+                  <p class="mb-0">{{ languageService.t('login.haveAccount') }}</p>
                   <button 
                     mat-button 
                     color="primary" 
                     type="button"
                     (click)="toggleRegister()"
                   >
-                    Login instead
+                    {{ languageService.t('login.loginInstead') }}
                   </button>
                 </div>
               </form>

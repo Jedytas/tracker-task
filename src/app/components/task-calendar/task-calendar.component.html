@@ -1,0 +1,55 @@
+<mat-card appearance="outlined">
+  <mat-card-header class="custom-header">
+    <mat-card-title>
+      <mat-icon class="me-2 text-primary">calendar_month</mat-icon>
+      {{ languageService.t('dashboard.calendar') }}
+    </mat-card-title>
+    <div class="header-actions">
+      <div class="calendar-nav">
+        <button mat-icon-button (click)="previousMonth()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <span class="month-name">{{ getMonthName() }}</span>
+        <button mat-icon-button (click)="nextMonth()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-card-header>
+  <mat-card-content class="p-3">
+    <div class="calendar-grid">
+      @for (day of weekDays(); track $index) {
+        <div class="weekday-header">
+          {{ day }}
+        </div>
+      }
+      @for (day of calendarDays; track day.date) {
+        <div 
+          class="calendar-day"
+          [class.other-month]="!day.isCurrentMonth"
+          [class.today]="day.isToday"
+          [class.has-deadline]="day.hasDeadline"
+          [matTooltip]="getTooltipText(day)"
+          [matTooltipDisabled]="!day.hasDeadline"
+        >
+          <span class="day-number">{{ day.day }}</span>
+          @if (day.hasDeadline) {
+            <span class="task-indicator">
+              {{ day.taskCount }}
+            </span>
+          }
+        </div>
+      }
+    </div>
+    <div class="calendar-legend mt-3">
+      <div class="legend-item">
+        <span class="legend-dot today-dot"></span>
+        <small>{{ languageService.t('stats.today') }}</small>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot deadline-dot"></span>
+        <small>{{ languageService.t('stats.hasDeadline') }}</small>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

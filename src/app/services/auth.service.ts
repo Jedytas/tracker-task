@@ -9,8 +9,8 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
 
-  private baseUrl = 'https://backend-tracker-mauve.vercel.app/api/auth';
-  //private baseUrl = 'http://localhost:5000/api/auth';
+  //private baseUrl = 'https://backend-tracker-mauve.vercel.app/api/auth';
+  private baseUrl = 'http://localhost:5000/api/auth';
   private accessTokenKey = 'accessToken';
   private refreshTokenKey = 'refreshToken';
 
@@ -53,6 +53,14 @@ export class AuthService {
 
   getUserProfile(): Observable<UserProfile> {
       return this.http.get<UserProfile>(`${this.baseUrl}/profile`);
+  }
+
+  updateProfile(data: { name: string; email: string }): Observable<{ message: string; user: UserProfile }> {
+    return this.http.patch<{ message: string; user: UserProfile }>(`${this.baseUrl}/profile`, data);
+  }
+
+  changePassword(data: { currentPassword: string; newPassword: string }): Observable<{ message: string }> {
+    return this.http.patch<{ message: string }>(`${this.baseUrl}/change-password`, data);
   }
 
   saveTokens(accessToken: string, refreshToken: string): void {

@@ -2,9 +2,9 @@
     <mat-card-header>
         <mat-card-title>
             <div class="d-flex align-items-center justify-content-between">
-                <div>
+                <div class="d-flex align-items-center">
                     <mat-icon class="me-2 text-primary">list</mat-icon>
-                    My Tasks
+                    <span>{{ languageService.t('dashboard.myTasks') }}</span>
                 </div>
                 <span class="badge rounded-pill">{{ commonService.tasks().length }}</span>
             </div>
@@ -12,29 +12,220 @@
     </mat-card-header>
     <mat-card-content class="p-3">
         <mat-divider></mat-divider>
-        <div class="list-group list-group-flush">
-            @for (task of commonService.tasks(); track $index) {
-            <div class="list-group-item task-item p-3" [class.completed]="task.done">
-                <div class="d-flex align-items-center">
-                    <mat-checkbox [checked]="task.done" (change)="toggleTaskCompletion(task)" color="primary">
-                        <span [class.completed-task]="task.done">{{ task.title }}</span>
-                    </mat-checkbox>
-                    <button mat-icon-button color="warn" class="ms-auto" (click)="deleteTask(task)"
-                        matTooltip="Delete task">
-                        <mat-icon>delete</mat-icon>
+        
+        <!-- Active Tasks -->
+        @if (getActiveTasks().length > 0) {
+        <div class="task-section">
+            <h6 class="section-title mt-3 mb-2">{{ languageService.t('tasks.activeTasks') }} ({{ getActiveTasks().length }})</h6>
+            <div class="list-group list-group-flush">
+                @for (task of getActiveTasks(); track task._id) {
+                <div class="list-group-item task-item p-3">
+                    <div class="d-flex align-items-center">
+                        <mat-checkbox [checked]="task.done" (change)="toggleTaskCompletion(task)" color="primary">
+                            <span class="task-title">{{ task.title }}</span>
+                        </mat-checkbox>
+                        <div class="ms-2 d-flex gap-2">
+                            <span class="badge" [ngClass]="getCategoryClass(task.category)">{{ getCategoryLabel(task.category) }}</span>
+                            <span class="badge" [ngClass]="getPriorityClass(task.priority)">{{ getPriorityLabel(task.priority) }}</span>
+                        </div>
+                        <div class="ms-auto d-flex gap-1">
+                            <button mat-icon-button color="primary" (click)="editTask(task)"
+                                [matTooltip]="languageService.t('tasks.editTaskTooltip')">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button color="warn" (click)="deleteTask(task)"
+                                [matTooltip]="languageService.t('tasks.deleteTaskTooltip')">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    @if (task.description) {
+                    <div class="task-description mt-2 ms-4">
+                        <small class="text-muted">
+                            <mat-icon class="small-icon">description</mat-icon>
+                            {{ task.description }}
+                        </small>
+                    </div>
+                    }
+                    <div class="task-dates mt-3 ms-4">
+                        <small class="text-muted">
+                            <mat-icon class="small-icon">schedule</mat-icon>
+                            {{ languageService.t('tasks.created') }}: {{ task.date | localizedDate:'short' }}
+                        </small>
+                        @if (task.deadline) {
+                        <small class="text-success ms-3" [class.text-danger]="isOverdue(task.deadline)">
+                            <mat-icon class="small-icon">event</mat-icon>
+                            {{ languageService.t('tasks.deadline') }}: {{ task.deadline | localizedDate:'short' }}
+                        </small>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+        }
+        
+        <!-- Completed Tasks -->
+        @if (getCompletedTasks().length > 0) {
+        <div class="task-section">
+            <div class="d-flex align-items-center justify-content-between mt-4 mb-2">
+                <h6 class="section-title mb-0 d-flex align-items-center" style="cursor: pointer;" (click)="toggleCompletedTasksExpanded()">
+                    <mat-icon class="me-1">{{ isCompletedTasksExpanded ? 'expand_more' : 'chevron_right' }}</mat-icon>
+                    {{ languageService.t('tasks.completedTasks') }} ({{ getCompletedTasks().length }})
+                </h6>
+                @if (isCompletedTasksExpanded) {
+                <div class="d-flex gap-2">
+                    @if (!isSelectionMode) {
+                    <button mat-raised-button color="primary" (click)="toggleSelectionMode()">
+                        <mat-icon>check_circle</mat-icon> {{ languageService.t('tasks.select') }}
+                    </button>
+                    }
+                    @if (isSelectionMode) {
+                    <button mat-raised-button (click)="toggleSelectionMode()">
+                        <mat-icon>cancel</mat-icon> {{ languageService.t('tasks.cancel') }}
+                    </button>
+                    }
+                    @if (selectedCompletedTasks.size > 0) {
+                    <button mat-raised-button color="warn" (click)="deleteSelectedTasks()">
+                        <mat-icon>delete</mat-icon> {{ languageService.t('tasks.deleteSelected') }} ({{ selectedCompletedTasks.size }})
+                    </button>
+                    }
+                    <button mat-raised-button color="warn" (click)="deleteAllCompletedTasks()">
+                        <mat-icon>delete_sweep</mat-icon> {{ languageService.t('tasks.deleteAll') }}
                     </button>
                 </div>
+                }
+            </div>
+            @if (isCompletedTasksExpanded) {
+            <div class="list-group list-group-flush">
+                @for (task of getCompletedTasks(); track task._id) {
+                <div class="list-group-item task-item p-3 completed" 
+                     [class.selected]="selectedCompletedTasks.has(task._id)"
+                     [class.selectable]="isSelectionMode"
+                     (click)="isSelectionMode && toggleTaskSelection(task._id)">
+                    <div class="d-flex align-items-center">
+                        @if (isSelectionMode) {
+                        <mat-icon class="selection-icon me-2" [class.selected]="selectedCompletedTasks.has(task._id)">
+                            {{ selectedCompletedTasks.has(task._id) ? 'check_circle' : 'radio_button_unchecked' }}
+                        </mat-icon>
+                        }
+                        <mat-checkbox [checked]="task.done" (change)="toggleTaskCompletion(task)" color="primary" [disabled]="isSelectionMode">
+                            <span [class.completed-task]="task.done" class="task-title">{{ task.title }}</span>
+                        </mat-checkbox>
+                        <div class="ms-2 d-flex gap-2">
+                            <span class="badge" [ngClass]="getCategoryClass(task.category)">{{ getCategoryLabel(task.category) }}</span>
+                            <span class="badge" [ngClass]="getPriorityClass(task.priority)">{{ getPriorityLabel(task.priority) }}</span>
+                        </div>
+                        <div class="ms-auto d-flex gap-1">
+                            <button mat-icon-button color="primary" (click)="editTask(task); $event.stopPropagation()"
+                                [matTooltip]="languageService.t('tasks.editTaskTooltip')" [disabled]="isSelectionMode">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button color="warn" (click)="deleteTask(task); $event.stopPropagation()"
+                                [matTooltip]="languageService.t('tasks.deleteTaskTooltip')" [disabled]="isSelectionMode">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    @if (task.description) {
+                    <div class="task-description mt-2 ms-4">
+                        <small class="text-muted">
+                            <mat-icon class="small-icon">description</mat-icon>
+                            {{ task.description }}
+                        </small>
+                    </div>
+                    }
+                    <div class="task-dates mt-3 ms-4">
+                        <small class="text-muted">
+                            <mat-icon class="small-icon">schedule</mat-icon>
+                            {{ languageService.t('tasks.created') }}: {{ task.date | localizedDate:'short' }}
+                        </small>
+                        @if (task.completedDate) {
+                        <small class="text-muted ms-3">
+                            <mat-icon class="small-icon">check_circle</mat-icon>
+                            {{ languageService.t('tasks.completed') }}: {{ task.completedDate | localizedDate:'short' }}
+                        </small>
+                        }
+                        @if (task.deadline) {
+                        <small class="text-muted ms-3">
+                            <mat-icon class="small-icon">event</mat-icon>
+                            {{ languageService.t('tasks.deadline') }}: {{ task.deadline | localizedDate:'short' }}
+                        </small>
+                        }
+                    </div>
+                </div>
+                }
             </div>
             }
         </div>
+        }
 
         @if(commonService.tasks().length === 0){
         <div class="empty-state">
             <div class="text-center">
                 <mat-icon class="fs-1 mb-2">inbox</mat-icon>
-                <p>No tasks added yet. Add your first task above!</p>
+                <p>{{ languageService.t('tasks.noTasksYet') }}</p>
             </div>
         </div>
         }
     </mat-card-content>
 </mat-card>
+
+<!-- Edit Task Dialog -->
+@if (isEditDialogOpen) {
+<div class="modal-backdrop"></div>
+<div class="modal-dialog">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>{{ languageService.t('tasks.editTask') }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="p-3">
+            <form [formGroup]="editForm">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{ languageService.t('addTask.title') }}</mat-label>
+                    <input matInput formControlName="title">
+                </mat-form-field>
+                
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{ languageService.t('tasks.deadline') }}</mat-label>
+                    <input matInput type="datetime-local" formControlName="deadline">
+                </mat-form-field>
+                
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{ languageService.t('addTask.description') }}</mat-label>
+                    <textarea matInput formControlName="description" rows="3"></textarea>
+                </mat-form-field>
+                
+                <div class="row">
+                    <div class="col-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ languageService.t('addTask.category') }}</mat-label>
+                            <mat-select formControlName="category">
+                                <mat-option value="work">{{ languageService.t('category.work') }}</mat-option>
+                                <mat-option value="study">{{ languageService.t('category.study') }}</mat-option>
+                                <mat-option value="personal">{{ languageService.t('category.personal') }}</mat-option>
+                                <mat-option value="shopping">{{ languageService.t('category.shopping') }}</mat-option>
+                                <mat-option value="other">{{ languageService.t('category.other') }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ languageService.t('addTask.priority') }}</mat-label>
+                            <mat-select formControlName="priority">
+                                <mat-option value="low">{{ languageService.t('priority.low') }}</mat-option>
+                                <mat-option value="medium">{{ languageService.t('priority.medium') }}</mat-option>
+                                <mat-option value="high">{{ languageService.t('priority.high') }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </form>
+        </mat-card-content>
+        <mat-card-actions align="end" class="p-3">
+            <button mat-button (click)="closeEditDialog()">{{ languageService.t('common.cancel') }}</button>
+            <button mat-raised-button color="primary" (click)="saveTask()">{{ languageService.t('common.save') }}</button>
+        </mat-card-actions>
+    </mat-card>
+</div>
+}

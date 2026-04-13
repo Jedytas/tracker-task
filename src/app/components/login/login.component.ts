@@ -6,18 +6,22 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonService } from '../../services/common.service';
 import { Router } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
 import { NgIf } from '@angular/common';
 import { LoginPayload, RegisterPayload } from '../../models/interface';
 import { AuthService } from '../../services/auth.service';
+import { LanguageService } from '../../services/language.service';
 import { ToastrService } from 'ngx-toastr';
 import { switchMap } from 'rxjs';
 
+type Theme = 'blue' | 'green' | 'black';
+
 @Component({
   selector: 'app-login',
-  imports: [MatIconModule, MatMenuModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, FormsModule, MatDividerModule, NgIf],
+  imports: [MatIconModule, MatMenuModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, FormsModule, MatDividerModule, NgIf, MatTooltipModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -25,10 +29,12 @@ export class LoginComponent {
 
   commonService = inject(CommonService);
   authService = inject(AuthService);
+  languageService = inject(LanguageService);
   router = inject(Router);
   toastr = inject(ToastrService);
 
   isRegistering = false;
+  currentTheme: Theme = 'black';
 
   loginForm: LoginPayload = {
     email: '',
@@ -41,6 +47,26 @@ export class LoginComponent {
     name: '',
     confirmPassword: ''
   };
+
+  constructor() {
+    this.loadTheme();
+  }
+
+  loadTheme() {
+    const savedTheme = localStorage.getItem('theme') as Theme;
+    if (savedTheme) {
+      this.setTheme(savedTheme);
+    } else {
+      this.setTheme('black');
+    }
+  }
+
+  setTheme(theme: Theme) {
+    this.currentTheme = theme;
+    document.body.className = '';
+    document.body.classList.add(`theme-${theme}`);
+    localStorage.setItem('theme', theme);
+  }
 
   toggleRegister() {
     this.isRegistering = !this.isRegistering;
@@ -71,12 +97,12 @@ export class LoginComponent {
     .subscribe({
       next: (profile) => {
         this.commonService.userName.set(profile.name);
-        this.toastr.success('Login successful!');
+        this.toastr.success(this.languageService.t('common.loginSuccess'));
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
         console.error('Login failed:', error);
-        this.toastr.error(error?.error?.message || 'Invalid credentials'); 
+        this.toastr.error(error?.error?.message || this.languageService.t('common.invalidCredentials')); 
       }
     });
   }
@@ -88,37 +114,37 @@ export class LoginComponent {
     const minNameLength = 2;
 
     if (!this.registerForm.name || this.registerForm.name.length < minNameLength || !namePattern.test(this.registerForm.name)) {
-      this.toastr.error('Name is required, must be at least 2 characters long and contain only letters and spaces.');
+      this.toastr.error(this.languageService.t('common.nameRequired'));
       return;
     }
 
     if (!this.registerForm.email || !this.registerForm.password) {
-      this.toastr.error('All fields are required.');
+      this.toastr.error(this.languageService.t('common.allFieldsRequired'));
       return;
     }
 
     if (!emailPattern.test(this.registerForm.email)) {
-      this.toastr.error('Please enter a valid email address.');
+      this.toastr.error(this.languageService.t('common.validEmailRequired'));
       return;
     }
 
     if (this.registerForm.password.length < minPasswordLength) {
-      this.toastr.error(`Password must be at least ${minPasswordLength} characters.`);
+      this.toastr.error(this.languageService.t('common.passwordMinLength'));
       return;
     }
 
     if (this.registerForm.password !== this.registerForm.confirmPassword) {
-      this.toastr.error('Passwords do not match.');
+      this.toastr.error(this.languageService.t('common.passwordsNotMatch'));
       return;
     }
 
     this.authService.register(this.registerForm).subscribe(
       (response) => {
-        this.toastr.success('Registration successful!');
+        this.toastr.success(this.languageService.t('common.registrationSuccess'));
         this.toggleRegister();
       },
       (error) => {
-        const errorMsg = error?.error?.message || 'Registration failed!';
+        const errorMsg = error?.error?.message || this.languageService.t('common.registrationFailed');
         this.toastr.error(errorMsg);
       }
     );

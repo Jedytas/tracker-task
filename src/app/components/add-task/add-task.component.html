@@ -3,7 +3,7 @@
     <mat-card-title>
       <div class="d-flex align-items-center">
         <mat-icon class="me-2">add_circle</mat-icon>
-        Add New Task
+        {{ languageService.t('dashboard.addNewTask') }}
       </div>
     </mat-card-title>
   </mat-card-header>
@@ -11,21 +11,61 @@
     <form [formGroup]="taskForm">
       <div class="input-group">
         <mat-form-field appearance="outline">
-          <mat-label>What do you need to do?</mat-label>
-          <input matInput formControlName="taskTitle" placeholder="Enter your task here" (keyup.enter)="addTask()">
+          <mat-label>{{ languageService.t('addTask.title') }}</mat-label>
+          <input matInput formControlName="taskTitle" [placeholder]="languageService.t('addTask.placeholder')" (keyup.enter)="addTask()">
           <mat-icon matSuffix>assignment</mat-icon>
           @if (taskForm.get('taskTitle')?.hasError('required')) {
           <mat-error>
-            Task title is required.
+            {{ languageService.t('addTask.titleRequired') }}
           </mat-error>
           }
         </mat-form-field>
+      </div>
+      <div class="input-group mt-2">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ languageService.t('addTask.deadline') }}</mat-label>
+          <input matInput type="datetime-local" formControlName="deadline">
+          <mat-icon matSuffix>event</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="input-group mt-2">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ languageService.t('addTask.description') }}</mat-label>
+          <textarea matInput formControlName="description" [placeholder]="languageService.t('addTask.descriptionPlaceholder')" rows="3"></textarea>
+          <mat-icon matSuffix>description</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="row mt-2">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ languageService.t('addTask.category') }}</mat-label>
+            <mat-select formControlName="category">
+              <mat-option value="work">{{ languageService.t('category.work') }}</mat-option>
+              <mat-option value="study">{{ languageService.t('category.study') }}</mat-option>
+              <mat-option value="personal">{{ languageService.t('category.personal') }}</mat-option>
+              <mat-option value="shopping">{{ languageService.t('category.shopping') }}</mat-option>
+              <mat-option value="other">{{ languageService.t('category.other') }}</mat-option>
+            </mat-select>
+            <mat-icon matSuffix>category</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ languageService.t('addTask.priority') }}</mat-label>
+            <mat-select formControlName="priority">
+              <mat-option value="low">{{ languageService.t('priority.low') }}</mat-option>
+              <mat-option value="medium">{{ languageService.t('priority.medium') }}</mat-option>
+              <mat-option value="high">{{ languageService.t('priority.high') }}</mat-option>
+            </mat-select>
+            <mat-icon matSuffix>flag</mat-icon>
+          </mat-form-field>
+        </div>
       </div>
     </form>
   </mat-card-content>
   <mat-card-actions align="end" class="px-3 pb-3">
     <button mat-raised-button (click)="addTask()" [disabled]="taskForm.invalid">
-      <mat-icon>add</mat-icon> Add Task
+      <mat-icon>add</mat-icon> {{ languageService.t('addTask.addButton') }}
     </button>
   </mat-card-actions>
 </mat-card>

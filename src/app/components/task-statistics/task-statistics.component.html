@@ -1,38 +1,107 @@
-<mat-card appearance="outlined">
+<mat-card appearance="outlined" class="h-100">
     <mat-card-header>
       <mat-card-title>
         <div class="d-flex align-items-center">
           <mat-icon class="me-2 text-primary">insights</mat-icon>
-          Task Statistics
+          {{ languageService.t('dashboard.taskStatistics') }}
         </div>
       </mat-card-title>
     </mat-card-header>
     <mat-card-content class="p-3">
       <div class="row g-3">
         <div class="col-4">
-          <div class="stat-card bg-primary bg-opacity-10 p-2 text-center">
-            <mat-icon class="text-primary">format_list_bulleted</mat-icon>
-            <div class="mt-1">
-              <h6 class="mb-0">{{ this.commonService.totalTasks() }}</h6>
-              <small class="text-muted">Total</small>
+          <div class="stat-card bg-primary bg-opacity-10 p-3 text-center rounded">
+            <mat-icon class="text-primary stat-icon">format_list_bulleted</mat-icon>
+            <div class="mt-2">
+              <h4 class="mb-0 fw-bold">{{ this.commonService.totalTasks() }}</h4>
+              <small class="text-muted">{{ languageService.t('stats.totalTasks') }}</small>
             </div>
           </div>
         </div>
         <div class="col-4">
-          <div class="stat-card bg-success bg-opacity-10 p-2 text-center">
-            <mat-icon class="text-success">check_circle</mat-icon>
-            <div class="mt-1">
-              <h6 class="mb-0">{{ this.commonService.completedTasks() }}</h6>
-              <small class="text-muted">Done</small>
+          <div class="stat-card bg-success bg-opacity-10 p-3 text-center rounded">
+            <mat-icon class="text-success stat-icon">check_circle</mat-icon>
+            <div class="mt-2">
+              <h4 class="mb-0 fw-bold">{{ this.commonService.completedTasks() }}</h4>
+              <small class="text-muted">{{ languageService.t('stats.completed') }}</small>
             </div>
           </div>
         </div>
         <div class="col-4">
-          <div class="stat-card bg-warning bg-opacity-10 p-2 text-center">
-            <mat-icon class="text-warning">hourglass_empty</mat-icon>
-            <div class="mt-1">
-              <h6 class="mb-0">{{ this.commonService.pendingTasks() }}</h6>
-              <small class="text-muted">Pending</small>
+          <div class="stat-card bg-warning bg-opacity-10 p-3 text-center rounded">
+            <mat-icon class="text-warning stat-icon">hourglass_empty</mat-icon>
+            <div class="mt-2">
+              <h4 class="mb-0 fw-bold">{{ this.commonService.pendingTasks() }}</h4>
+              <small class="text-muted">{{ languageService.t('stats.pending') }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Progress Bar -->
+      <div class="mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-muted small">{{ languageService.t('stats.overallProgress') }}</span>
+          <span class="fw-bold text-primary">{{ getCompletionRate() }}%</span>
+        </div>
+        <div class="progress" style="height: 12px;">
+          <div 
+            class="progress-bar" 
+            [class.bg-success]="getCompletionRate() >= 70"
+            [class.bg-warning]="getCompletionRate() >= 30 && getCompletionRate() < 70"
+            [class.bg-danger]="getCompletionRate() < 30"
+            [style.width.%]="getCompletionRate()"
+            role="progressbar">
+          </div>
+        </div>
+        <div class="mt-2 text-center">
+          <small class="text-muted">{{ getMotivationalMessage() }}</small>
+        </div>
+      </div>
+
+      <!-- Additional Stats -->
+      <div class="row g-2 mt-3">
+        <div class="col-6">
+          <div class="mini-stat-card p-2 rounded border">
+            <div class="d-flex align-items-center">
+              <mat-icon class="text-danger me-2">warning</mat-icon>
+              <div>
+                <div class="fw-bold">{{ getOverdueTasks() }}</div>
+                <small class="text-muted">{{ languageService.t('stats.overdue') }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="mini-stat-card p-2 rounded border">
+            <div class="d-flex align-items-center">
+              <mat-icon class="text-info me-2">today</mat-icon>
+              <div>
+                <div class="fw-bold">{{ getTodayTasks() }}</div>
+                <small class="text-muted">{{ languageService.t('stats.dueToday') }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="mini-stat-card p-2 rounded border">
+            <div class="d-flex align-items-center">
+              <mat-icon class="text-purple me-2">date_range</mat-icon>
+              <div>
+                <div class="fw-bold">{{ getThisWeekTasks() }}</div>
+                <small class="text-muted">{{ languageService.t('stats.thisWeek') }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="mini-stat-card p-2 rounded border">
+            <div class="d-flex align-items-center">
+              <mat-icon class="text-secondary me-2">event_available</mat-icon>
+              <div>
+                <div class="fw-bold">{{ getNoDeadlineTasks() }}</div>
+                <small class="text-muted">{{ languageService.t('stats.noDeadline') }}</small>
+              </div>
             </div>
           </div>
         </div>

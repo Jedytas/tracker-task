@@ -2,3 +2,282 @@
     text-decoration: line-through;
     color: gray;
   }
+
+.task-title {
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.task-description {
+  font-size: 0.95rem;
+  display: flex;
+  align-items: flex-start;
+  
+  .small-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-right: 4px;
+    margin-top: 2px;
+  }
+  
+  small {
+    line-height: 1.4;
+    font-size: 0.95rem;
+  }
+}
+
+.task-dates {
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  
+  .small-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+  
+  .text-danger {
+    color: #dc3545 !important;
+    font-weight: 500;
+  }
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.modal-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1050;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  pointer-events: auto;
+  box-sizing: border-box;
+  padding: 0 10px;
+  
+  mat-card {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  mat-card-content {
+    form {
+      mat-form-field:first-child {
+        margin-top: 20px;
+      }
+      
+      .row {
+        margin-top: 0 !important;
+      }
+    }
+  }
+}
+
+// Для выпадающих списков Material
+::ng-deep .cdk-overlay-container {
+  z-index: 1100 !important;
+}
+
+.section-title {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+  padding-left: 0.5rem;
+  border-left: 3px solid #1976d2;
+}
+
+.selectable {
+  cursor: pointer;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: #f5f5f5;
+  }
+  
+  &.selected {
+    background-color: #e3f2fd !important;
+    border-left: 3px solid #2196f3;
+    
+    &:hover {
+      background-color: #bbdefb !important;
+    }
+  }
+}
+
+.selection-icon {
+  color: #9e9e9e;
+  
+  &.selected {
+    color: #2196f3;
+  }
+}
+
+// Dark theme support
+:host-context(body.theme-black) {
+  .selectable {
+    &:hover {
+      background-color: #2a2a2a;
+    }
+    
+    &.selected {
+      background-color: #1e3a5f !important;
+      
+      &:hover {
+        background-color: #2a4a7c !important;
+      }
+    }
+  }
+}
+
+.task-item {
+  .d-flex.align-items-center {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+// Мобильная адаптация
+@media (max-width: 768px) {
+  .task-item {
+    .d-flex.align-items-center {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center !important;
+      gap: 8px;
+    }
+    
+    mat-checkbox {
+      flex: 0 0 100%;
+    }
+    
+    .ms-2 {
+      flex: 1;
+      margin-left: 0 !important;
+      order: 2;
+    }
+    
+    .ms-auto {
+      flex: 0 0 auto;
+      margin-left: 0 !important;
+      order: 3;
+    }
+    
+    .badge {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.4rem;
+    }
+  }
+  
+  .task-dates {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 8px;
+    
+    small {
+      display: block;
+      margin-left: 0 !important;
+    }
+  }
+  
+  .section-title {
+    font-size: 0.9rem;
+  }
+  
+  // Исправление для кнопок в заголовке секции
+  .task-section > .d-flex.justify-content-between {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    
+    .section-title {
+      flex: 1 1 100%;
+      margin-bottom: 0;
+    }
+    
+    > .d-flex.gap-2 {
+      flex: 1 1 100%;
+      display: flex !important;
+      justify-content: flex-end !important;
+      flex-wrap: wrap;
+      margin-left: auto;
+      
+      button {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+        
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  mat-card-content {
+    padding: 0.5rem !important;
+  }
+  
+  .task-item {
+    padding: 1rem !important;
+  }
+  
+  mat-icon-button {
+    width: 36px !important;
+    height: 36px !important;
+    
+    mat-icon {
+      font-size: 20px;
+    }
+  }
+  
+  // Дополнительные исправления для очень маленьких экранов
+  .d-flex.justify-content-between {
+    .d-flex.gap-2 {
+      width: 100%;
+      justify-content: flex-start;
+      
+      button {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        white-space: nowrap;
+        
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+          margin-right: 2px;
+        }
+      }
+    }
+  }
+}

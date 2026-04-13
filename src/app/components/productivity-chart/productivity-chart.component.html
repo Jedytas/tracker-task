@@ -1,0 +1,79 @@
+<mat-card appearance="outlined">
+  <mat-card-header class="custom-header">
+    <mat-card-title>
+      <mat-icon class="me-2 text-primary">bar_chart</mat-icon>
+      {{ languageService.t('dashboard.productivityChart') }}
+    </mat-card-title>
+    <div class="header-actions">
+      <mat-button-toggle-group [value]="viewMode" (change)="changeView($event.value)">
+        <mat-button-toggle value="week">{{ languageService.t('chart.week') }}</mat-button-toggle>
+        <mat-button-toggle value="month">{{ languageService.t('chart.month') }}</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </mat-card-header>
+  <mat-card-content class="p-3">
+    <div class="chart-container">
+      <div class="chart-bars" *ngIf="chartData.length > 0; else noData">
+        <div class="bar-group" *ngFor="let data of chartData">
+          <div class="bar-wrapper">
+            <div class="bar-stack">
+              <div 
+                class="bar bar-completed" 
+                [style.height.px]="getBarHeight(data.completed)"
+                [matTooltip]="languageService.t('stats.completed') + ': ' + data.completed"
+              ></div>
+              <div 
+                class="bar bar-pending" 
+                [style.height.px]="getBarHeight(data.total - data.completed)"
+                [matTooltip]="languageService.t('stats.pending') + ': ' + (data.total - data.completed)"
+              ></div>
+            </div>
+            <div class="bar-value">{{ data.total }}</div>
+          </div>
+          <div class="bar-label">{{ data.label }}</div>
+        </div>
+      </div>
+      
+      <ng-template #noData>
+        <div class="no-data-message">
+          <mat-icon>info</mat-icon>
+          <p>No data available for the selected period</p>
+        </div>
+      </ng-template>
+      
+      <div class="chart-legend mt-3">
+        <div class="legend-item">
+          <span class="legend-color completed"></span>
+          <small>{{ languageService.t('stats.completed') }}</small>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color pending"></span>
+          <small>{{ languageService.t('stats.pending') }}</small>
+        </div>
+      </div>
+      
+      <div class="chart-summary mt-3 p-3 bg-light rounded">
+        <div class="row g-2">
+          <div class="col-6">
+            <div class="summary-item">
+              <mat-icon class="text-success">check_circle</mat-icon>
+              <div>
+                <div class="fw-bold">{{ getTotalCompleted() }}</div>
+                <small class="text-muted">{{ languageService.t('stats.completed') }}</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="summary-item">
+              <mat-icon class="text-warning">pending</mat-icon>
+              <div>
+                <div class="fw-bold">{{ getTotalPending() }}</div>
+                <small class="text-muted">{{ languageService.t('stats.pending') }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
