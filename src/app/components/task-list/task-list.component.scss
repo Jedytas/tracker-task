@@ -46,6 +46,16 @@
     color: #dc3545 !important;
     font-weight: 500;
   }
+
+  .text-success {
+    color: #198754 !important;
+    font-weight: 500;
+  }
+
+  .text-warning {
+    color: #d39e00 !important;
+    font-weight: 500;
+  }
 }
 
 .badge {
@@ -138,6 +148,58 @@
   }
 }
 
+.task-section > .d-flex.justify-content-between > .d-flex.gap-2 {
+  button[mat-raised-button]:not([color="warn"]) {
+    background-color: #238636 !important;
+    color: #ffffff !important;
+
+    &:hover:not(:disabled) {
+      background-color: #2ea043 !important;
+    }
+
+    mat-icon {
+      color: #ffffff !important;
+    }
+  }
+
+  button[mat-raised-button][color="warn"] {
+    background-color: #da3633 !important;
+    color: #ffffff !important;
+
+    &:hover:not(:disabled) {
+      background-color: #b62324 !important;
+    }
+
+    mat-icon {
+      color: #ffffff !important;
+    }
+  }
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    overflow: visible;
+
+    mat-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      min-width: 16px;
+      min-height: 16px;
+      line-height: 1;
+      font-size: 16px;
+      overflow: visible;
+      margin: 0;
+      vertical-align: middle;
+      transform: translateY(1px);
+    }
+  }
+}
+
 // Dark theme support
 :host-context(body.theme-black) {
   .selectable {
@@ -151,6 +213,20 @@
       &:hover {
         background-color: #2a4a7c !important;
       }
+    }
+  }
+
+  .task-dates {
+    .text-success {
+      color: #3fb950 !important;
+    }
+
+    .text-warning {
+      color: #e3b341 !important;
+    }
+
+    .text-danger {
+      color: #f85149 !important;
     }
   }
 }
@@ -229,13 +305,19 @@
       margin-left: auto;
       
       button {
+        gap: 4px;
         font-size: 0.85rem;
         padding: 6px 12px;
         
         mat-icon {
-          font-size: 18px;
-          width: 18px;
-          height: 18px;
+          font-size: 15px;
+          width: 15px;
+          height: 15px;
+          min-width: 15px;
+          min-height: 15px;
+          line-height: 1;
+          overflow: visible;
+          transform: translateY(1px);
         }
       }
     }
@@ -267,15 +349,21 @@
       justify-content: flex-start;
       
       button {
+        gap: 4px;
         font-size: 0.75rem;
         padding: 4px 8px;
         white-space: nowrap;
         
         mat-icon {
-          font-size: 16px;
-          width: 16px;
-          height: 16px;
-          margin-right: 2px;
+          font-size: 14px;
+          width: 14px;
+          height: 14px;
+          min-width: 14px;
+          min-height: 14px;
+          line-height: 1;
+          overflow: visible;
+          margin: 0;
+          transform: translateY(1px);
         }
       }
     }

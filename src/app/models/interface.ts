@@ -16,6 +16,7 @@ export interface LoginResponse {
 
 export interface RegisterResponse {
   message: string;
+  verificationDelivery?: 'email' | 'log';
 }
 
 export interface refreshTokenResponse {
@@ -28,7 +29,11 @@ export interface UserProfile {
   _id: string;
   name: string;
   email: string;
-  date: string;
+  avatar?: string | null;
+  createdAt: string;
+  updatedAt?: string;
+  isEmailVerified?: boolean;
+  pendingEmail?: string | null;
 }
 
 export interface Task {

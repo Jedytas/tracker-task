@@ -9,14 +9,12 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
 
-  //private baseUrl = 'https://backend-tracker-mauve.vercel.app/api/auth';
   private baseUrl = 'http://localhost:5000/api/auth';
   private accessTokenKey = 'accessToken';
   private refreshTokenKey = 'refreshToken';
 
   http= inject(HttpClient);
   router= inject(Router);
-  constructor() { }
 
   register(user: RegisterPayload): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${this.baseUrl}/register`, user);
@@ -55,12 +53,40 @@ export class AuthService {
       return this.http.get<UserProfile>(`${this.baseUrl}/profile`);
   }
 
-  updateProfile(data: { name: string; email: string }): Observable<{ message: string; user: UserProfile }> {
-    return this.http.patch<{ message: string; user: UserProfile }>(`${this.baseUrl}/profile`, data);
+  updateProfile(data: { name: string; email: string; avatar?: string }): Observable<{ message: string; user: UserProfile; emailChangeRequested?: boolean }> {
+    return this.http.patch<{ message: string; user: UserProfile; emailChangeRequested?: boolean }>(`${this.baseUrl}/profile`, data);
   }
 
-  changePassword(data: { currentPassword: string; newPassword: string }): Observable<{ message: string }> {
-    return this.http.patch<{ message: string }>(`${this.baseUrl}/change-password`, data);
+  requestPasswordChangeCode(data: { currentPassword: string; newPassword: string }): Observable<{ message: string; codeDelivery?: 'email' | 'log' }> {
+    return this.http.post<{ message: string; codeDelivery?: 'email' | 'log' }>(`${this.baseUrl}/change-password/request-code`, data);
+  }
+
+  confirmPasswordChange(code: string): Observable<{ message: string }> {
+    return this.http.patch<{ message: string }>(`${this.baseUrl}/change-password/confirm`, { code });
+  }
+
+  resendVerificationEmail(): Observable<{ message: string; verificationDelivery?: 'email' | 'log' }> {
+    return this.http.post<{ message: string; verificationDelivery?: 'email' | 'log' }>(`${this.baseUrl}/verify-email/resend`, {});
+  }
+
+  verifyEmail(token: string): Observable<{ message: string }> {
+    return this.http.get<{ message: string }>(`${this.baseUrl}/verify-email`, { params: { token } });
+  }
+
+  forgotPassword(email: string): Observable<{ message: string; resetDelivery?: 'email' | 'log' }> {
+    return this.http.post<{ message: string; resetDelivery?: 'email' | 'log' }>(`${this.baseUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/reset-password`, { token, newPassword });
+  }
+
+  confirmEmailChange(token: string): Observable<{ message: string }> {
+    return this.http.get<{ message: string }>(`${this.baseUrl}/confirm-email-change`, { params: { token } });
+  }
+
+  cancelEmailChange(): Observable<{ message: string; user: UserProfile }> {
+    return this.http.delete<{ message: string; user: UserProfile }>(`${this.baseUrl}/change-email/cancel`);
   }
 
   saveTokens(accessToken: string, refreshToken: string): void {

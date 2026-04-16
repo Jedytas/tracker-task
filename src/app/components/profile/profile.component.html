@@ -1,0 +1,256 @@
+<div class="container py-4 profile-page">
+  <div class="row g-4">
+    <div class="col-12">
+      <h2 class="mb-2">{{ languageService.t('profile.pageTitle') }}</h2>
+      <p class="text-muted mb-0">{{ languageService.t('profile.pageDescription') }}</p>
+    </div>
+
+    <div class="col-xl-4 col-lg-5">
+      <mat-card appearance="outlined" class="profile-overview-card h-100">
+        <mat-card-content class="p-4">
+          @if (profile && !profile.isEmailVerified) {
+            <div class="profile-alert profile-alert--warning mb-4">
+              <div class="profile-alert__title">{{ languageService.t('profile.emailNotVerified') }}</div>
+              <div class="profile-alert__text">{{ languageService.t('profile.verifyBanner') }}</div>
+            </div>
+          }
+
+          <div class="profile-avatar-stack">
+            <div class="profile-avatar-row">
+              <div class="profile-avatar profile-avatar--interactive">
+                @if (avatarPreview) {
+                  <img class="profile-avatar-image" [src]="avatarPreview" alt="Profile avatar">
+                } @else {
+                  <i class="bi bi-person-circle"></i>
+                }
+
+                <button mat-stroked-button type="button" class="profile-avatar-edit-button" (click)="toggleAvatarMenu()">
+                  <mat-icon>edit</mat-icon>
+                  <span>{{ languageService.t('profile.avatarButton') }}</span>
+                </button>
+              </div>
+            </div>
+
+            @if (isAvatarMenuOpen) {
+              <div class="profile-avatar-dropdown">
+                <button type="button" class="profile-avatar-dropdown__item" (click)="triggerAvatarSelection(profileAvatarInput)">
+                  <span>{{ languageService.t('profile.uploadPhotoMenu') }}</span>
+                </button>
+                @if (avatarPreview) {
+                  <button type="button" class="profile-avatar-dropdown__item profile-avatar-dropdown__item--danger" (click)="removeAvatar(); isAvatarMenuOpen = false">
+                    <span>{{ languageService.t('profile.removePhotoMenu') }}</span>
+                  </button>
+                }
+              </div>
+            }
+
+            <input #profileAvatarInput type="file" accept="image/*" (change)="onAvatarSelected($event)">
+          </div>
+
+          <div class="profile-overview" *ngIf="profile as user; else loadingOverview">
+            <div class="profile-name">{{ user.name | titlecase }}</div>
+            <div class="profile-email">{{ user.email }}</div>
+
+            <div class="profile-meta">
+              <div class="profile-meta__label">{{ languageService.t('profile.memberSince') }}</div>
+              <div class="profile-meta__value">{{ user.createdAt | localizedDate:'d MMMM y' }}</div>
+            </div>
+
+            <div class="profile-meta">
+              <div class="profile-meta__label">{{ languageService.t('profile.accountInfo') }}</div>
+              <div class="profile-account-info">
+                <div class="profile-account-info__row">
+                  <span>{{ languageService.t('profile.userId') }}</span>
+                  <code>{{ user._id }}</code>
+                </div>
+                <div class="profile-account-info__row">
+                  <span>{{ languageService.t('profile.emailStatus') }}</span>
+                  <span class="profile-email-status-badge" [class.is-verified]="user.isEmailVerified">
+                    {{ user.isEmailVerified ? languageService.t('profile.emailVerified') : languageService.t('profile.emailNotVerified') }}
+                  </span>
+                </div>
+                @if (user.pendingEmail) {
+                  <div class="profile-account-info__row">
+                    <span>{{ languageService.t('profile.pendingEmail') }}</span>
+                    <div class="profile-pending-email-row">
+                      <code>{{ user.pendingEmail }}</code>
+                      <button
+                        mat-stroked-button
+                        type="button"
+                        (click)="cancelPendingEmailChange()"
+                        [disabled]="isCancellingEmailChange">
+                        {{ isCancellingEmailChange ? languageService.t('profile.saving') : languageService.t('profile.cancelEmailChange') }}
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              @if (!user.isEmailVerified) {
+                <button
+                  mat-stroked-button
+                  type="button"
+                  class="w-100 mt-3"
+                  (click)="resendVerificationEmail()"
+                  [disabled]="isResendingVerification || verificationCooldownSeconds > 0">
+                  {{ isResendingVerification
+                    ? languageService.t('password.changing')
+                    : verificationCooldownSeconds > 0
+                      ? languageService.t('profile.resendVerificationCooldown') + ' ' + verificationCooldownSeconds + ' c'
+                      : languageService.t('profile.resendVerification') }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <ng-template #loadingOverview>
+            <div class="profile-overview profile-overview--loading">
+              <div class="profile-name">{{ languageService.t('profile.loading') }}</div>
+            </div>
+          </ng-template>
+
+          <mat-divider class="my-4"></mat-divider>
+
+          <div class="profile-quick-actions">
+            <div class="profile-meta__label">{{ languageService.t('profile.quickActions') }}</div>
+            <button mat-stroked-button type="button" class="w-100" (click)="openDashboard()">
+              {{ languageService.t('nav.tasks') }}
+            </button>
+            <button mat-stroked-button type="button" class="w-100" (click)="openAnalytics()">
+              {{ languageService.t('nav.analytics') }}
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-xl-8 col-lg-7">
+      <mat-card appearance="outlined" class="profile-edit-card">
+        <mat-card-header>
+          <mat-card-title>{{ languageService.t('profile.editProfile') }}</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content class="p-4 pt-2">
+          <form [formGroup]="profileForm" class="profile-form">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ languageService.t('profile.name') }}</mat-label>
+              <input matInput formControlName="name">
+              <mat-icon matSuffix>person</mat-icon>
+              @if (profileForm.get('name')?.hasError('required')) {
+                <mat-error>{{ languageService.t('profile.nameRequired') }}</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ languageService.t('profile.email') }}</mat-label>
+              <input matInput type="email" formControlName="email">
+              <mat-icon matSuffix>email</mat-icon>
+              @if (profileForm.get('email')?.hasError('required')) {
+                <mat-error>{{ languageService.t('profile.emailRequired') }}</mat-error>
+              }
+              @if (profileForm.get('email')?.hasError('email')) {
+                <mat-error>{{ languageService.t('profile.emailInvalid') }}</mat-error>
+              }
+            </mat-form-field>
+          </form>
+        </mat-card-content>
+
+        <mat-card-actions align="end" class="p-4 pt-0">
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            (click)="saveProfile()"
+            [disabled]="profileForm.invalid || isLoading || isSaving">
+            {{ isSaving ? languageService.t('profile.saving') : languageService.t('profile.save') }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+
+      <mat-card appearance="outlined" class="profile-password-card mt-4">
+        <mat-card-header>
+          <mat-card-title>{{ languageService.t('password.title') }}</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content class="p-4 pt-2">
+          @if (!profile?.isEmailVerified) {
+            <div class="profile-alert profile-alert--warning">
+              <div class="profile-alert__title">{{ languageService.t('password.changeDisabledTitle') }}</div>
+              <div class="profile-alert__text">{{ languageService.t('password.changeDisabledText') }}</div>
+            </div>
+          } @else {
+            <form [formGroup]="passwordForm" class="profile-form">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ languageService.t('password.current') }}</mat-label>
+                <input matInput type="password" formControlName="currentPassword">
+                <mat-icon matSuffix>lock</mat-icon>
+                @if (passwordForm.get('currentPassword')?.hasError('required')) {
+                  <mat-error>{{ languageService.t('password.currentRequired') }}</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ languageService.t('password.new') }}</mat-label>
+                <input matInput type="password" formControlName="newPassword">
+                <mat-icon matSuffix>lock_open</mat-icon>
+                @if (passwordForm.get('newPassword')?.hasError('required')) {
+                  <mat-error>{{ languageService.t('password.newRequired') }}</mat-error>
+                }
+                @if (passwordForm.get('newPassword')?.hasError('minlength')) {
+                  <mat-error>{{ languageService.t('common.passwordMinLength') }}</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ languageService.t('password.confirm') }}</mat-label>
+                <input matInput type="password" formControlName="confirmPassword">
+                <mat-icon matSuffix>verified_user</mat-icon>
+                @if (passwordForm.get('confirmPassword')?.hasError('required')) {
+                  <mat-error>{{ languageService.t('password.confirmRequired') }}</mat-error>
+                }
+              </mat-form-field>
+
+              <div class="profile-meta__label">{{ languageService.t('password.codeHint') }}</div>
+
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ languageService.t('password.codeLabel') }}</mat-label>
+                <input matInput formControlName="code" maxlength="6">
+                <mat-icon matSuffix>pin</mat-icon>
+                @if (passwordForm.get('code')?.hasError('required')) {
+                  <mat-error>{{ languageService.t('password.codeRequired') }}</mat-error>
+                }
+              </mat-form-field>
+            </form>
+          }
+        </mat-card-content>
+
+        <mat-card-actions align="end" class="p-4 pt-0">
+          @if (profile?.isEmailVerified) {
+            <div class="profile-password-actions">
+              <button
+                mat-stroked-button
+                type="button"
+                (click)="requestPasswordChangeCode()"
+                [disabled]="!isPasswordStepValid || isSendingPasswordCode || passwordCodeCooldownSeconds > 0">
+                {{ isSendingPasswordCode
+                  ? languageService.t('password.changing')
+                  : passwordCodeCooldownSeconds > 0
+                    ? languageService.t('password.codeDeliveryCooldown') + ' ' + passwordCodeCooldownSeconds + ' c'
+                    : languageService.t('password.sendCode') }}
+              </button>
+
+              <button
+                mat-raised-button
+                color="primary"
+                type="button"
+                (click)="changePassword()"
+                [disabled]="!isPasswordStepValid || passwordForm.get('code')?.invalid || isChangingPassword || !hasRequestedPasswordCode">
+                {{ isChangingPassword ? languageService.t('password.changing') : languageService.t('password.change') }}
+              </button>
+            </div>
+          }
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

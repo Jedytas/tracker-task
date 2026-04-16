@@ -198,15 +198,19 @@
       margin-left: 0;
       width: auto;
       
-      mat-button-toggle-group {
+      ::ng-deep mat-button-toggle-group {
         width: auto;
         display: inline-flex;
-        
-        mat-button-toggle {
-          font-size: 0.75rem;
-          padding: 0px 8px;
-          min-height: 20px;
-          line-height: 20px;
+        height: 36px;
+         
+        .mat-button-toggle-button {
+          height: 36px;
+        }
+
+        .mat-button-toggle-label-content {
+          line-height: 36px;
+          padding: 0 11px;
+          font-size: 0.72rem;
         }
       }
     }
@@ -253,9 +257,10 @@
       gap: 8px;
       
       mat-icon {
-        font-size: 24px;
-        width: 24px;
-        height: 24px;
+        font-size: 16px !important;
+        width: 16px !important;
+        height: 16px !important;
+        transform: translateY(-1px);
       }
       
       .fw-bold {
@@ -305,5 +310,16 @@
   
   mat-card-content {
     padding: 0.5rem !important;
+  }
+
+  .chart-summary {
+    .summary-item {
+      mat-icon {
+        font-size: 16px !important;
+        width: 16px !important;
+        height: 16px !important;
+        transform: translateY(-1px);
+      }
+    }
   }
 }

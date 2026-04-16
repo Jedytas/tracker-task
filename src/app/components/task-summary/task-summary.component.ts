@@ -1,21 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input'; 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonService } from '../../services/common.service';
 import { LanguageService } from '../../services/language.service';
 
-interface Task {
-  id: number;
-  title: string;
-  completed: boolean;
-  createdAt: Date;
-}
-
 @Component({
   selector: 'app-task-summary',
-  imports: [MatCardModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [MatCardModule, MatButtonModule, MatIconModule],
   templateUrl: './task-summary.component.html',
   styleUrl: './task-summary.component.scss'
 })
@@ -25,9 +17,7 @@ export class TaskSummaryComponent {
   showSummary: boolean = false;
   commonService = inject(CommonService);
   languageService = inject(LanguageService);
-  tasks: Task[] = [];
 
- 
   generateSummary() {
     const total = this.commonService.totalTasks();
     const completed = this.commonService.completedTasks();
@@ -44,15 +34,6 @@ export class TaskSummaryComponent {
     
     this.showSummary = true;
   }
-
-  get completedTasks(): number {
-    return this.tasks.filter(task => task.completed).length;
-  }
-
-  get pendingTasks(): number {
-    return this.tasks.filter(task => !task.completed).length;
-  }
-
 
   getMotivationalMessage(completionRate: number): string {
     const lang = this.languageService.currentLanguage();

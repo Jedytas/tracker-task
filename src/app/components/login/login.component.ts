@@ -26,6 +26,7 @@ type Theme = 'blue' | 'green' | 'black';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+  private readonly forgotPasswordCooldownKey = 'forgotPasswordCooldownUntil';
 
   commonService = inject(CommonService);
   authService = inject(AuthService);
@@ -34,6 +35,7 @@ export class LoginComponent {
   toastr = inject(ToastrService);
 
   isRegistering = false;
+  isForgotPasswordMode = false;
   currentTheme: Theme = 'black';
 
   loginForm: LoginPayload = {
@@ -48,8 +50,13 @@ export class LoginComponent {
     confirmPassword: ''
   };
 
+  forgotPasswordEmail = '';
+  forgotPasswordCooldownSeconds = 0;
+  private forgotPasswordCooldownTimer: ReturnType<typeof setInterval> | null = null;
+
   constructor() {
     this.loadTheme();
+    this.restoreForgotPasswordCooldown();
   }
 
   loadTheme() {
@@ -70,6 +77,7 @@ export class LoginComponent {
 
   toggleRegister() {
     this.isRegistering = !this.isRegistering;
+    this.isForgotPasswordMode = false;
     this.loginForm = {
       email: '',
       password: ''
@@ -82,9 +90,15 @@ export class LoginComponent {
     };
   }
 
-  signInWithGoogle(event: MouseEvent) {
-    event.preventDefault();
-    window.location.href = 'http://localhost:5000/api/auth/google';
+  openForgotPassword() {
+    this.isRegistering = false;
+    this.isForgotPasswordMode = true;
+    this.forgotPasswordEmail = this.loginForm.email;
+  }
+
+  closeForgotPassword() {
+    this.isForgotPasswordMode = false;
+    this.forgotPasswordEmail = '';
   }
 
   login() {
@@ -102,7 +116,7 @@ export class LoginComponent {
       },
       error: (error) => {
         console.error('Login failed:', error);
-        this.toastr.error(error?.error?.message || this.languageService.t('common.invalidCredentials')); 
+        this.toastr.error(this.languageService.tApi(error?.error?.message, 'common.invalidCredentials'));
       }
     });
   }
@@ -140,13 +154,90 @@ export class LoginComponent {
 
     this.authService.register(this.registerForm).subscribe(
       (response) => {
-        this.toastr.success(this.languageService.t('common.registrationSuccess'));
+        const messageKey = response.verificationDelivery === 'log'
+          ? 'profile.verifyResentDev'
+          : 'common.registrationSuccess';
+        this.toastr.success(this.languageService.t(messageKey));
         this.toggleRegister();
       },
       (error) => {
-        const errorMsg = error?.error?.message || this.languageService.t('common.registrationFailed');
-        this.toastr.error(errorMsg);
+        this.toastr.error(this.languageService.tApi(error?.error?.message, 'common.registrationFailed'));
       }
     );
+  }
+
+  forgotPassword() {
+    if (this.forgotPasswordCooldownSeconds > 0) {
+      this.toastr.info(`${this.languageService.t('password.sendResetLinkCooldown')} ${this.forgotPasswordCooldownSeconds} c`);
+      return;
+    }
+
+    if (!this.forgotPasswordEmail) {
+      this.toastr.error(this.languageService.t('common.validEmailRequired'));
+      return;
+    }
+
+    this.authService.forgotPassword(this.forgotPasswordEmail).subscribe({
+      next: (response) => {
+        this.startForgotPasswordCooldown();
+        const messageKey = response.resetDelivery === 'log'
+          ? 'password.resetSentDev'
+          : 'password.resetSentGeneric';
+        this.toastr.success(this.languageService.t(messageKey));
+        this.closeForgotPassword();
+      },
+      error: (error) => {
+        this.toastr.error(this.languageService.tApi(error?.error?.message, 'password.resetFailed'));
+      }
+    });
+  }
+
+  private startForgotPasswordCooldown(): void {
+    const cooldownUntil = Date.now() + 60_000;
+    localStorage.setItem(this.forgotPasswordCooldownKey, String(cooldownUntil));
+    this.forgotPasswordCooldownSeconds = 60;
+    if (this.forgotPasswordCooldownTimer) {
+      clearInterval(this.forgotPasswordCooldownTimer);
+    }
+
+    this.forgotPasswordCooldownTimer = setInterval(() => {
+      const remainingSeconds = Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000));
+      this.forgotPasswordCooldownSeconds = remainingSeconds;
+      if (this.forgotPasswordCooldownSeconds === 0 && this.forgotPasswordCooldownTimer) {
+        clearInterval(this.forgotPasswordCooldownTimer);
+        this.forgotPasswordCooldownTimer = null;
+        localStorage.removeItem(this.forgotPasswordCooldownKey);
+      }
+    }, 1000);
+  }
+
+  private restoreForgotPasswordCooldown(): void {
+    const storedValue = localStorage.getItem(this.forgotPasswordCooldownKey);
+    const cooldownUntil = storedValue ? Number(storedValue) : 0;
+
+    if (!cooldownUntil || cooldownUntil <= Date.now()) {
+      localStorage.removeItem(this.forgotPasswordCooldownKey);
+      return;
+    }
+
+    this.forgotPasswordCooldownSeconds = Math.ceil((cooldownUntil - Date.now()) / 1000);
+    this.startForgotPasswordCooldownFromTimestamp(cooldownUntil);
+  }
+
+  private startForgotPasswordCooldownFromTimestamp(cooldownUntil: number): void {
+    if (this.forgotPasswordCooldownTimer) {
+      clearInterval(this.forgotPasswordCooldownTimer);
+    }
+
+    this.forgotPasswordCooldownTimer = setInterval(() => {
+      const remainingSeconds = Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000));
+      this.forgotPasswordCooldownSeconds = remainingSeconds;
+
+      if (remainingSeconds === 0 && this.forgotPasswordCooldownTimer) {
+        clearInterval(this.forgotPasswordCooldownTimer);
+        this.forgotPasswordCooldownTimer = null;
+        localStorage.removeItem(this.forgotPasswordCooldownKey);
+      }
+    }, 1000);
   }
 }

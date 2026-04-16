@@ -1,11 +1,11 @@
 <mat-card appearance="outlined">
   <mat-card-header>
-    <mat-card-title>
-      <div class="d-flex align-items-center">
-        <mat-icon class="me-2 text-primary">bolt</mat-icon>
-        Quick Actions
-      </div>
-    </mat-card-title>
+      <mat-card-title>
+        <div class="d-flex align-items-center">
+          <mat-icon class="me-2 text-primary">bolt</mat-icon>
+          {{ languageService.t('quickActions.title') }}
+        </div>
+      </mat-card-title>
   </mat-card-header>
   <mat-card-content class="p-3">
     <div class="row g-3">
@@ -20,8 +20,8 @@
         >
           <div class="btn-content">
             <mat-icon>today</mat-icon>
-            <span>Today's Tasks</span>
-            <small class="text-muted">Due today</small>
+            <span>{{ languageService.t('quickActions.todayTasks') }}</span>
+            <small class="text-muted">{{ languageService.t('quickActions.dueToday') }}</small>
           </div>
         </button>
       </div>
@@ -36,8 +36,8 @@
         >
           <div class="btn-content">
             <mat-icon>warning</mat-icon>
-            <span>Overdue</span>
-            <small class="text-muted">Past deadline</small>
+            <span>{{ languageService.t('quickActions.overdue') }}</span>
+            <small class="text-muted">{{ languageService.t('quickActions.pastDeadline') }}</small>
           </div>
         </button>
       </div>
@@ -52,8 +52,8 @@
         >
           <div class="btn-content">
             <mat-icon>priority_high</mat-icon>
-            <span>High Priority</span>
-            <small class="text-muted">Important tasks</small>
+            <span>{{ languageService.t('quickActions.highPriority') }}</span>
+            <small class="text-muted">{{ languageService.t('quickActions.importantTasks') }}</small>
           </div>
         </button>
       </div>

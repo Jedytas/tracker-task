@@ -1,0 +1,68 @@
+<mat-card appearance="outlined" class="activity-heatmap-card">
+  <mat-card-header>
+    <mat-card-title>
+      <div class="d-flex align-items-center">
+        <mat-icon class="me-2 text-primary">grid_view</mat-icon>
+        {{ languageService.t('analytics.activityHeatmap') }}
+      </div>
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="p-3">
+    <div class="heatmap-summary mb-3">
+      <span class="fw-semibold">{{ totalActivities }}</span>
+      <span class="text-muted ms-1">{{ languageService.t('analytics.activitySummary') }}</span>
+      <span class="text-muted mx-2">•</span>
+      <span class="fw-semibold">{{ totalActiveDays }}</span>
+      <span class="text-muted ms-1">{{ languageService.t('analytics.activeDays') }}</span>
+    </div>
+
+    <div class="heatmap-wrapper">
+      <div class="month-labels">
+        @for (month of monthLabels(); track month.index) {
+          <span class="month-label" [style.gridColumn]="month.index + 1">{{ month.label }}</span>
+        }
+      </div>
+
+      <div class="heatmap-body">
+        <div class="weekday-labels">
+          <span></span>
+          <span>{{ weekDayLabels()[0] }}</span>
+          <span></span>
+          <span>{{ weekDayLabels()[1] }}</span>
+          <span></span>
+          <span>{{ weekDayLabels()[2] }}</span>
+          <span></span>
+        </div>
+
+        <div class="weeks-grid">
+          @for (week of heatmapWeeks; track $index) {
+            <div class="week-column">
+              @for (day of week; track day.date.toISOString()) {
+                <div
+                  class="heatmap-cell"
+                  [class.level-0]="day.level === 0"
+                  [class.level-1]="day.level === 1"
+                  [class.level-2]="day.level === 2"
+                  [class.level-3]="day.level === 3"
+                  [class.level-4]="day.level === 4"
+                  [class.outside-year]="!day.isCurrentYear"
+                  [matTooltip]="getTooltip(day)">
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="heatmap-legend heatmap-legend--bottom mt-2">
+      <small class="text-muted">{{ languageService.t('analytics.less') }}</small>
+      <div class="heatmap-cell level-0 legend-cell"></div>
+      <div class="heatmap-cell level-1 legend-cell"></div>
+      <div class="heatmap-cell level-2 legend-cell"></div>
+      <div class="heatmap-cell level-3 legend-cell"></div>
+      <div class="heatmap-cell level-4 legend-cell"></div>
+      <small class="text-muted">{{ languageService.t('analytics.more') }}</small>
+    </div>
+  </mat-card-content>
+</mat-card>

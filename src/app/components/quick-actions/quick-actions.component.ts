@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
 import { CommonService } from '../../services/common.service';
 import { Router } from '@angular/router';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-quick-actions',
@@ -15,6 +16,7 @@ import { Router } from '@angular/router';
 export class QuickActionsComponent {
   commonService = inject(CommonService);
   router = inject(Router);
+  languageService = inject(LanguageService);
 
   getTodayTasks(): number {
     const today = new Date();

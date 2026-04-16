@@ -10,7 +10,5 @@ import { CommonService } from './services/common.service';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'Your-Task-Tracker';
-
   commonService = inject(CommonService);
 }

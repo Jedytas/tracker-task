@@ -1,0 +1,20 @@
+<div class="container py-4 auth-standalone-page">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8 col-12">
+      <mat-card appearance="outlined">
+        <mat-card-content class="p-4 text-center">
+          <h2 class="mb-3">{{ languageService.t('profile.emailChangeTitle') }}</h2>
+
+          @if (isLoading) {
+            <p class="mb-0">{{ languageService.t('profile.emailChangeLoading') }}</p>
+          } @else {
+            <p class="mb-4">{{ message }}</p>
+            <a mat-raised-button color="primary" routerLink="/login">
+              {{ isSuccess ? languageService.t('login.loginButton') : languageService.t('common.close') }}
+            </a>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

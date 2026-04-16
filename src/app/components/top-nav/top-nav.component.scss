@@ -1,7 +1,63 @@
+.navbar {
+    position: relative;
+    overflow: visible;
+}
+
+.nav-container {
+    position: relative;
+}
+
 .user-menu {
-    font-size: 2rem;
+    font-size: 2.25rem;
     cursor: pointer;
     margin-left: 10px;  
+}
+
+.navbar-brand {
+    cursor: pointer;
+}
+
+.user-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+}
+
+.theme-selector-login {
+    position: absolute;
+    right: 12px;
+    bottom: 0;
+    transform: translateY(50%);
+    z-index: 2;
+    display: flex;
+    gap: 8px;
+
+    button {
+        background-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        mat-icon {
+            margin: 0;
+        }
+    }
+}
+
+// Fix for mat-menu z-index
+::ng-deep .cdk-overlay-container {
+    z-index: 9999 !important;
+}
+
+::ng-deep .mat-mdc-menu-panel {
+    z-index: 10000 !important;
 }
 
 .theme-menu-section {
@@ -56,6 +112,11 @@
 }
 
 @media (max-width: 360px) {
+    .theme-selector-login {
+        right: 8px;
+        gap: 6px;
+    }
+
     .navbar-brand {
         margin-right: 0px !important;
     }

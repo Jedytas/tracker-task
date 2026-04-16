@@ -8,12 +8,9 @@ import { Task, TaskStatistics } from '../models/interface';
 })
 export class TaskService {
 
-  //private baseUrl = 'https://backend-tracker-mauve.vercel.app/api/task';
   private baseUrl = 'http://localhost:5000/api/task';
 
   http= inject(HttpClient);
-
-  constructor() { }
 
   getTasks(): Observable<Task[]> {
     return this.http.get<Task[]>(`${this.baseUrl}/list`);

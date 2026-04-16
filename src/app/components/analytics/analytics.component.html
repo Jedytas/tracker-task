@@ -1,0 +1,58 @@
+<div class="container py-4">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="mb-4">{{ languageService.t('nav.analytics') }}</h2>
+      <p class="text-muted mb-0">{{ languageService.t('analytics.description') }}</p>
+    </div>
+  </div>
+
+  <div class="row mt-1 g-4 analytics-top-grid">
+    <div class="col-xl-9 col-12">
+      <app-activity-heatmap></app-activity-heatmap>
+    </div>
+    <div class="col-xl-3 col-12">
+      <div class="analytics-side-cards">
+        <mat-card appearance="outlined" class="analytics-insight-card">
+          <mat-card-content class="analytics-insight-card__content p-3">
+            <div class="insight-label">{{ languageService.t('analytics.mostActiveDay') }}</div>
+            <div class="insight-value text-capitalize">{{ getMostActiveDayName() }}</div>
+            <div class="insight-meta">{{ getMostActiveDayDate() }} · {{ getCompletedTasksLabel(mostActiveDay?.count ?? 0) }}</div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card appearance="outlined" class="analytics-insight-card">
+          <mat-card-content class="analytics-insight-card__content analytics-insight-card__content--weekly p-3">
+            <div class="insight-label">{{ languageService.t('analytics.weekly') }}</div>
+            <div class="weekly-heatmap-wrapper">
+              <div class="weekly-heatmap-grid">
+                @for (day of currentWeekActivity; track day.date.toISOString()) {
+                  <div class="weekly-heatmap-day" [class.is-today]="day.isToday">
+                    <div
+                      class="weekly-heatmap-cell"
+                      [class.level-0]="day.level === 0"
+                      [class.level-1]="day.level === 1"
+                      [class.level-2]="day.level === 2"
+                      [class.level-3]="day.level === 3"
+                      [class.level-4]="day.level === 4"
+                      [matTooltip]="getWeeklyDayTooltip(day)">
+                    </div>
+                    <span class="weekly-heatmap-label">{{ day.label }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mt-1 analytics-grid">
+    <div class="col-lg-6">
+      <app-task-statistics></app-task-statistics>
+    </div>
+    <div class="col-lg-6">
+      <app-productivity-chart></app-productivity-chart>
+    </div>
+  </div>
+</div>

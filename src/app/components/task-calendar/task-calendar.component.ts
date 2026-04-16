@@ -131,7 +131,7 @@ export class TaskCalendarComponent implements OnInit {
     nextDay.setDate(nextDay.getDate() + 1);
     
     return this.commonService.tasks().filter(task => {
-      if (!task.deadline) return false;
+      if (task.done || !task.deadline) return false;
       const taskDeadline = new Date(task.deadline);
       taskDeadline.setHours(0, 0, 0, 0);
       return taskDeadline.getTime() === checkDate.getTime();

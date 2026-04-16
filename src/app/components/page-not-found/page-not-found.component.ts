@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-page-not-found',
@@ -7,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrl: './page-not-found.component.scss'
 })
 export class PageNotFoundComponent {
-
+  languageService = inject(LanguageService);
 }

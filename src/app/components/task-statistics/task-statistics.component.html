@@ -60,6 +60,9 @@
       </div>
 
       <!-- Additional Stats -->
+      <div class="mt-4 mb-2">
+        <small class="text-muted">{{ languageService.t('stats.deadlineStatsHint') }}</small>
+      </div>
       <div class="row g-2 mt-3">
         <div class="col-6">
           <div class="mini-stat-card p-2 rounded border">
@@ -99,8 +102,8 @@
             <div class="d-flex align-items-center">
               <mat-icon class="text-secondary me-2">event_available</mat-icon>
               <div>
-                <div class="fw-bold">{{ getNoDeadlineTasks() }}</div>
-                <small class="text-muted">{{ languageService.t('stats.noDeadline') }}</small>
+                <div class="fw-bold">{{ getTomorrowTasks() }}</div>
+                <small class="text-muted">{{ languageService.t('stats.tomorrow') }}</small>
               </div>
             </div>
           </div>

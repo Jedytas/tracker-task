@@ -6,9 +6,8 @@ import { Task } from '../models/interface';
 })
 export class CommonService {
 
-  constructor() { }
-  
   userName= signal('');
+  userAvatar = signal<string | null>(null);
   tasks= signal<Task[]>([]);
 
   totalTasks = signal(0);

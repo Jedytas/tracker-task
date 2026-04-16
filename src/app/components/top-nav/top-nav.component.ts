@@ -7,20 +7,19 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonService } from '../../services/common.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { UserProfile } from '../../models/interface';
 import { LanguageService, Language } from '../../services/language.service';
+import { Router } from '@angular/router';
 
 type Theme = 'blue' | 'green' | 'black';
 
 @Component({
   selector: 'app-top-nav',
-  imports: [MatIconModule, MatMenuModule, NgIf, MatButtonModule, MatDividerModule, MatTooltipModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule, ReactiveFormsModule],
+  imports: [MatIconModule, MatMenuModule, NgIf, MatButtonModule, MatDividerModule, MatTooltipModule, MatCardModule, MatFormFieldModule, MatSelectModule],
   templateUrl: './top-nav.component.html',
   styleUrl: './top-nav.component.scss'
 })
@@ -31,28 +30,12 @@ export class TopNavComponent implements OnInit {
   authService = inject(AuthService);
   toastr = inject(ToastrService);
   languageService = inject(LanguageService);
-  private fb = inject(FormBuilder);
+  router = inject(Router);
 
-  isEditProfileOpen = false;
-  isChangePasswordOpen = false;
   isSettingsOpen = false;
-
-  editProfileForm: FormGroup;
-  changePasswordForm: FormGroup;
 
   constructor() {
     this.loadTheme();
-    
-    this.editProfileForm = this.fb.group({
-      name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]]
-    });
-    
-    this.changePasswordForm = this.fb.group({
-      currentPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
-    });
   };
 
   ngOnInit() {
@@ -64,6 +47,7 @@ export class TopNavComponent implements OnInit {
       this.authService.getUserProfile().subscribe({
         next: (profile: UserProfile) => {
           this.commonService.userName.set(profile.name);
+          this.commonService.userAvatar.set(profile.avatar || null);
         },
         error: (error) => {
           console.error('Failed to fetch user profile:', error);
@@ -97,82 +81,27 @@ export class TopNavComponent implements OnInit {
     this.languageService.setLanguage(lang);
   }
 
-  openEditProfile() {
-    this.isEditProfileOpen = true;
-    // Загружаем текущие данные профиля
-    this.authService.getUserProfile().subscribe({
-      next: (profile: UserProfile) => {
-        this.editProfileForm.patchValue({
-          name: profile.name,
-          email: profile.email
-        });
-      },
-      error: (error) => {
-        console.error('Failed to load profile:', error);
-        this.toastr.error(this.languageService.t('common.profileLoadFailed'));
-      }
-    });
-  }
-
-  closeEditProfile() {
-    this.isEditProfileOpen = false;
-    this.editProfileForm.reset();
-  }
-
-  saveProfile() {
-    if (this.editProfileForm.valid) {
-      const { name, email } = this.editProfileForm.value;
-      
-      this.authService.updateProfile({ name, email }).subscribe({
-        next: (response) => {
-          this.commonService.userName.set(response.user.name);
-          this.toastr.success(this.languageService.t('common.profileUpdated'));
-          this.closeEditProfile();
-        },
-        error: (error) => {
-          console.error('Failed to update profile:', error);
-          this.toastr.error(error.error?.message || this.languageService.t('common.profileUpdateFailed'));
-        }
-      });
-    }
-  }
-
-  openChangePassword() {
-    this.isChangePasswordOpen = true;
-  }
-
-  closeChangePassword() {
-    this.isChangePasswordOpen = false;
-    this.changePasswordForm.reset();
-  }
-
-  savePassword() {
-    if (this.changePasswordForm.valid) {
-      const { currentPassword, newPassword, confirmPassword } = this.changePasswordForm.value;
-      
-      if (newPassword !== confirmPassword) {
-        this.toastr.error(this.languageService.t('common.passwordsNotMatch'));
-        return;
-      }
-      
-      this.authService.changePassword({ currentPassword, newPassword }).subscribe({
-        next: (response) => {
-          this.toastr.success(this.languageService.t('common.passwordChanged'));
-          this.closeChangePassword();
-        },
-        error: (error) => {
-          console.error('Failed to change password:', error);
-          this.toastr.error(error.error?.message || this.languageService.t('common.passwordChangeFailed'));
-        }
-      });
-    }
-  }
-
   openSettings() {
     this.isSettingsOpen = true;
   }
 
   closeSettings() {
     this.isSettingsOpen = false;
+  }
+
+  openHome() {
+    this.router.navigate([this.authService.isLoggedIn() ? '/dashboard' : '/login']);
+  }
+
+  openDashboard() {
+    this.router.navigate(['/dashboard']);
+  }
+
+  openAnalytics() {
+    this.router.navigate(['/analytics']);
+  }
+
+  openProfile() {
+    this.router.navigate(['/profile']);
   }
 }

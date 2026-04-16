@@ -108,7 +108,7 @@ export class ProductivityChartComponent implements OnInit {
     const maxTotal = Math.max(...this.chartData.map(d => d.total), 1);
     this.maxValue = Math.max(maxTotal, 5);
     
-    console.log('Week Data:', this.chartData, 'Max Value:', this.maxValue);
+
   }
   
   generateMonthData(): void {
@@ -172,7 +172,7 @@ export class ProductivityChartComponent implements OnInit {
     const maxTotal = Math.max(...this.chartData.map(d => d.total), 1);
     this.maxValue = Math.max(maxTotal, 5);
     
-    console.log('Month Data:', this.chartData, 'Max Value:', this.maxValue);
+
   }
   
   changeView(mode: 'week' | 'month'): void {

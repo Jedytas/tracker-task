@@ -131,6 +131,196 @@ export class TaskListComponent implements OnInit {
     return new Date(deadline) >= new Date();
   }
 
+  getDaysUntilDeadline(deadline: Date): number {
+    const deadlineDate = new Date(deadline);
+    const now = new Date();
+    const diffInMs = deadlineDate.getTime() - now.getTime();
+
+    if (diffInMs <= 0) {
+      return 0;
+    }
+
+    return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+  }
+
+  getDaysUntilDeadlineLabel(deadline: Date): string {
+    const deadlineDate = new Date(deadline);
+    const now = new Date();
+    const diffInMs = deadlineDate.getTime() - now.getTime();
+
+    if (deadlineDate < now) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const normalizedDeadline = new Date(deadlineDate);
+      normalizedDeadline.setHours(0, 0, 0, 0);
+
+      const overdueDays = Math.floor((today.getTime() - normalizedDeadline.getTime()) / (1000 * 60 * 60 * 24));
+
+      if (this.languageService.currentLanguage() === 'ru') {
+        if (overdueDays <= 0) {
+          return 'Просрочено';
+        }
+
+        if (overdueDays === 1) {
+          return 'Просрочено на 1 день';
+        }
+
+        if (overdueDays >= 2 && overdueDays <= 4) {
+          return `Просрочено на ${overdueDays} дня`;
+        }
+
+        return `Просрочено на ${overdueDays} дней`;
+      }
+
+      if (overdueDays <= 0) {
+        return 'Overdue';
+      }
+
+      return `${overdueDays} day(s) overdue`;
+    }
+
+    if (diffInMs < 1000 * 60 * 60 * 24) {
+      const totalMinutesLeft = Math.ceil(diffInMs / (1000 * 60));
+      const hoursLeft = Math.floor(totalMinutesLeft / 60);
+      const minutesLeft = totalMinutesLeft % 60;
+
+      if (this.languageService.currentLanguage() === 'ru') {
+        if (hoursLeft <= 0) {
+          return `${minutesLeft} мин.`;
+        }
+
+        if (minutesLeft === 0) {
+          return `${hoursLeft} ч.`;
+        }
+
+        return `${hoursLeft} ч. ${minutesLeft} мин.`;
+      }
+
+      if (hoursLeft <= 0) {
+        return `${minutesLeft} min`;
+      }
+
+      if (minutesLeft === 0) {
+        return `${hoursLeft} h`;
+      }
+
+      return `${hoursLeft} h ${minutesLeft} min`;
+    }
+
+    const daysLeft = this.getDaysUntilDeadline(deadline);
+    const remainingMs = diffInMs - daysLeft * 1000 * 60 * 60 * 24;
+    const remainingHours = Math.floor(remainingMs / (1000 * 60 * 60));
+    const remainingMinutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+    const showMinutes = diffInMs < 1000 * 60 * 60 * 24;
+
+    if (this.languageService.currentLanguage() === 'ru') {
+      if (daysLeft === 1) {
+        if (remainingHours > 0) {
+          if (showMinutes && remainingMinutes > 0) {
+            return `1 день ${remainingHours} ч. ${remainingMinutes} мин.`;
+          }
+
+          return `1 день ${remainingHours} ч.`;
+        }
+
+        if (showMinutes && remainingMinutes > 0) {
+          return `1 день ${remainingMinutes} мин.`;
+        }
+
+        return '1 день';
+      }
+
+      if (daysLeft >= 2 && daysLeft <= 4) {
+        if (daysLeft > 3) {
+          return `${daysLeft} дня`;
+        }
+
+        if (remainingHours > 0) {
+          if (showMinutes && remainingMinutes > 0) {
+            return `${daysLeft} дня ${remainingHours} ч. ${remainingMinutes} мин.`;
+          }
+
+          return `${daysLeft} дня ${remainingHours} ч.`;
+        }
+
+        if (showMinutes && remainingMinutes > 0) {
+          return `${daysLeft} дня ${remainingMinutes} мин.`;
+        }
+
+        return `${daysLeft} дня`;
+      }
+
+      if (daysLeft > 3) {
+        return `${daysLeft} дней`;
+      }
+
+      if (remainingHours > 0) {
+        if (showMinutes && remainingMinutes > 0) {
+          return `${daysLeft} дней ${remainingHours} ч. ${remainingMinutes} мин.`;
+        }
+
+        return `${daysLeft} дней ${remainingHours} ч.`;
+      }
+
+      if (showMinutes && remainingMinutes > 0) {
+        return `${daysLeft} дней ${remainingMinutes} мин.`;
+      }
+
+      return `${daysLeft} дней`;
+    }
+
+    if (daysLeft === 1) {
+      if (remainingHours > 0) {
+        if (showMinutes && remainingMinutes > 0) {
+          return `1 day ${remainingHours} h ${remainingMinutes} min`;
+        }
+
+        return `1 day ${remainingHours} h`;
+      }
+
+      if (showMinutes && remainingMinutes > 0) {
+        return `1 day ${remainingMinutes} min`;
+      }
+
+      return '1 day';
+    }
+
+    if (daysLeft > 3) {
+      return `${daysLeft} days`;
+    }
+
+    if (remainingHours > 0) {
+      if (showMinutes && remainingMinutes > 0) {
+        return `${daysLeft} days ${remainingHours} h ${remainingMinutes} min`;
+      }
+
+      return `${daysLeft} days ${remainingHours} h`;
+    }
+
+    if (showMinutes && remainingMinutes > 0) {
+      return `${daysLeft} days ${remainingMinutes} min`;
+    }
+
+    return `${daysLeft} days`;
+  }
+
+  getDeadlineState(deadline: Date): 'danger' | 'warning' | 'success' {
+    const deadlineDate = new Date(deadline);
+
+    if (deadlineDate < new Date()) {
+      return 'danger';
+    }
+
+    const daysLeft = this.getDaysUntilDeadline(deadline);
+
+    if (daysLeft <= 2) {
+      return 'warning';
+    }
+
+    return 'success';
+  }
+
   getCategoryClass(category?: string): string {
     const categoryMap: { [key: string]: string } = {
       'work': 'bg-primary',

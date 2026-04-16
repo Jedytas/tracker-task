@@ -1,52 +1,8 @@
 <div class="landing-page">
-    <!-- Theme and Language Selectors -->
-    <div class="theme-selector-login">
-      <button mat-icon-button [matMenuTriggerFor]="themeMenu" [matTooltip]="languageService.currentLanguage() === 'ru' ? 'Сменить тему' : 'Change Theme'">
-        <mat-icon>palette</mat-icon>
-      </button>
-      <mat-menu #themeMenu="matMenu">
-        <div class="theme-menu-section">
-          <div class="theme-label">{{ languageService.currentLanguage() === 'ru' ? 'Выберите тему' : 'Choose Theme' }}</div>
-          <div class="theme-options">
-            <div 
-              class="theme-option theme-green-option" 
-              [class.active]="currentTheme === 'green'"
-              (click)="setTheme('green')" 
-              [matTooltip]="languageService.currentLanguage() === 'ru' ? 'Светло-зелёная тема' : 'Light Green Theme'">
-            </div>
-            <div 
-              class="theme-option theme-blue-option" 
-              [class.active]="currentTheme === 'blue'"
-              (click)="setTheme('blue')" 
-              [matTooltip]="languageService.currentLanguage() === 'ru' ? 'Светло-синяя тема' : 'Light Blue Theme'">
-            </div>
-            <div 
-              class="theme-option theme-black-option" 
-              [class.active]="currentTheme === 'black'"
-              (click)="setTheme('black')" 
-              [matTooltip]="languageService.currentLanguage() === 'ru' ? 'Тёмная тема' : 'Dark Theme'">
-            </div>
-          </div>
-        </div>
-      </mat-menu>
-      
-      <button mat-icon-button [matMenuTriggerFor]="langMenu" [matTooltip]="languageService.currentLanguage() === 'ru' ? 'Сменить язык' : 'Change Language'" class="ms-2">
-        <mat-icon>language</mat-icon>
-      </button>
-      <mat-menu #langMenu="matMenu">
-        <button mat-menu-item (click)="languageService.setLanguage('en')">
-          <span [class.fw-bold]="languageService.currentLanguage() === 'en'">English</span>
-        </button>
-        <button mat-menu-item (click)="languageService.setLanguage('ru')">
-          <span [class.fw-bold]="languageService.currentLanguage() === 'ru'">Русский</span>
-        </button>
-      </mat-menu>
-    </div>
-    
     <div class="container py-5">
       <div class="row justify-content-center">
         <div class="col-lg-8 text-center mb-5">
-          <h1 class="display-4 mb-3">{{ languageService.t('login.welcome') }}</h1>
+          <h1 class="display-4 mb-3 text-nowrap">{{ languageService.t('login.welcome') }}</h1>
           <p class="lead mb-4">
             {{ languageService.t('login.description') }}
           </p>
@@ -75,7 +31,7 @@
               <mat-card-title>{{ languageService.t('login.loginTitle') }}</mat-card-title>
             </mat-card-header>
             <mat-card-content class="p-4">
-              <form *ngIf="!isRegistering" (ngSubmit)="login()">
+              <form *ngIf="!isRegistering && !isForgotPasswordMode" (ngSubmit)="login()">
                 <mat-form-field appearance="outline" class="w-100 mb-3">
                   <mat-label>{{ languageService.t('login.email') }}</mat-label>
                   <input 
@@ -111,6 +67,17 @@
                   {{ languageService.t('login.loginButton') }}
                 </button>
 
+                <div class="text-center mt-3">
+                  <button 
+                    mat-button 
+                    color="primary" 
+                    type="button"
+                    (click)="openForgotPassword()"
+                  >
+                    {{ languageService.t('login.forgotPassword') }}
+                  </button>
+                </div>
+
                 <mat-divider class="my-4"></mat-divider>
 
                 <div class="text-center mt-3">
@@ -124,6 +91,44 @@
                       {{ languageService.t('login.createAccount') }}
                     </button>
                   </div>
+              </form>
+
+              <form *ngIf="isForgotPasswordMode" (ngSubmit)="forgotPassword()">
+                <mat-form-field appearance="outline" class="w-100 mb-3">
+                  <mat-label>{{ languageService.t('login.email') }}</mat-label>
+                  <input 
+                    matInput 
+                    [(ngModel)]="forgotPasswordEmail" 
+                    name="forgotPasswordEmail"
+                    type="email" 
+                    [placeholder]="languageService.t('login.email')"
+                    required
+                  >
+                  <mat-icon matSuffix>email</mat-icon>
+                </mat-form-field>
+
+                <button 
+                  mat-raised-button 
+                  color="primary" 
+                  class="w-100"
+                  type="submit"
+                  [disabled]="forgotPasswordCooldownSeconds > 0"
+                >
+                  {{ forgotPasswordCooldownSeconds > 0
+                    ? languageService.t('password.sendResetLinkCooldown') + ' ' + forgotPasswordCooldownSeconds + ' c'
+                    : languageService.t('password.sendResetLink') }}
+                </button>
+
+                <div class="text-center mt-3">
+                  <button 
+                    mat-button 
+                    color="primary" 
+                    type="button"
+                    (click)="closeForgotPassword()"
+                  >
+                    {{ languageService.t('login.loginInstead') }}
+                  </button>
+                </div>
               </form>
 
               <form *ngIf="isRegistering" (ngSubmit)="register()">

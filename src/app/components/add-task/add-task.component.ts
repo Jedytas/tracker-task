@@ -5,8 +5,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDividerModule } from '@angular/material/divider';
-import { Task } from '../../models/interface';
 import { TaskService } from '../../services/task.service';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from '../../services/common.service';
@@ -14,7 +12,7 @@ import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-add-task',
-  imports: [MatCardModule, MatInputModule, MatButtonModule, MatIconModule, MatSelectModule, ReactiveFormsModule, MatDividerModule],
+  imports: [MatCardModule, MatInputModule, MatButtonModule, MatIconModule, MatSelectModule, ReactiveFormsModule],
   templateUrl: './add-task.component.html',
   styleUrl: './add-task.component.scss'
 })
@@ -25,7 +23,6 @@ export class AddTaskComponent {
   languageService = inject(LanguageService);
   
   taskForm: FormGroup;
-  tasks: Task[] = [];
 
   constructor(private fb: FormBuilder) {
     this.taskForm = this.fb.group({
@@ -46,8 +43,6 @@ export class AddTaskComponent {
       const description = this.taskForm.value.description || '';
       const category = this.taskForm.value.category || 'other';
       const priority = this.taskForm.value.priority || 'medium';
-      console.log('Form deadline value:', deadlineValue);
-      console.log('Sending task with deadline:', deadline);
       this.taskService.addTask(this.taskForm.value.taskTitle, deadline, description, category, priority).subscribe({
         next: (task) => {
           this.commonService.tasks.update((currentTasks) => [...currentTasks, task]);

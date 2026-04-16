@@ -14,7 +14,7 @@
         class="w-100" 
         (click)="generateSummary()"
       >
-        <mat-icon>auto_awesome</mat-icon> {{ languageService.currentLanguage() === 'ru' ? 'Рассчитать сводку' : 'Calculate Summary' }}
+        <mat-icon>auto_awesome</mat-icon> {{ languageService.t('taskSummary.calculate') }}
       </button>
       @if(showSummary){
       <div class="summary-content p-3 mt-3 bg-light rounded">

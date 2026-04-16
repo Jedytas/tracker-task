@@ -53,9 +53,19 @@
                             {{ languageService.t('tasks.created') }}: {{ task.date | localizedDate:'short' }}
                         </small>
                         @if (task.deadline) {
-                        <small class="text-success ms-3" [class.text-danger]="isOverdue(task.deadline)">
+                        <small class="ms-3"
+                            [class.text-success]="getDeadlineState(task.deadline) === 'success'"
+                            [class.text-warning]="getDeadlineState(task.deadline) === 'warning'"
+                            [class.text-danger]="getDeadlineState(task.deadline) === 'danger'">
                             <mat-icon class="small-icon">event</mat-icon>
                             {{ languageService.t('tasks.deadline') }}: {{ task.deadline | localizedDate:'short' }}
+                        </small>
+                        <small class="ms-3"
+                            [class.text-success]="getDeadlineState(task.deadline) === 'success'"
+                            [class.text-warning]="getDeadlineState(task.deadline) === 'warning'"
+                            [class.text-danger]="getDeadlineState(task.deadline) === 'danger'">
+                            <mat-icon class="small-icon">hourglass_top</mat-icon>
+                            {{ languageService.t('tasks.daysLeft') }}: {{ getDaysUntilDeadlineLabel(task.deadline) }}
                         </small>
                         }
                     </div>

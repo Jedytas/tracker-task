@@ -1,22 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input'; 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TaskService } from '../../services/task.service';
 import { CommonService } from '../../services/common.service';
 import { LanguageService } from '../../services/language.service';
 
-interface Task {
-  id: number;
-  title: string;
-  completed: boolean;
-  createdAt: Date;
-}
-
 @Component({
   selector: 'app-task-statistics',
-  imports: [MatCardModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [MatCardModule, MatButtonModule, MatIconModule],
   templateUrl: './task-statistics.component.html',
   styleUrl: './task-statistics.component.scss'
 })
@@ -28,6 +20,18 @@ export class TaskStatisticsComponent {
 
   ngOnInit(): void {  
     this.fetchTaskStatistics();
+    this.fetchTasks();
+  }
+
+  fetchTasks(): void {
+    this.taskService.getTasks().subscribe({
+      next: (tasks) => {
+        this.commonService.tasks.set(tasks);
+      },
+      error: (error) => {
+        console.error('Failed to fetch tasks:', error);
+      },
+    });
   }
 
   fetchTaskStatistics(): void {
@@ -94,28 +98,54 @@ export class TaskStatisticsComponent {
     tomorrow.setDate(tomorrow.getDate() + 1);
     
     return this.commonService.tasks().filter(task => 
-      !task.done && task.deadline && 
+      !task.done &&
+      task.deadline && 
       new Date(task.deadline) >= today && 
       new Date(task.deadline) < tomorrow
+    ).length;
+  }
+
+  getTomorrowTasks(): number {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const dayAfterTomorrow = new Date(tomorrow);
+    dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
+
+    return this.commonService.tasks().filter(task =>
+      !task.done &&
+      task.deadline &&
+      new Date(task.deadline) >= tomorrow &&
+      new Date(task.deadline) < dayAfterTomorrow
     ).length;
   }
 
   getThisWeekTasks(): number {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const nextWeek = new Date(today);
-    nextWeek.setDate(nextWeek.getDate() + 7);
+    
+    // Получаем день недели (0 = воскресенье, 1 = понедельник, ..., 6 = суббота)
+    const dayOfWeek = today.getDay();
+    
+    // Вычисляем понедельник текущей недели
+    const monday = new Date(today);
+    const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Если воскресенье, то 6 дней назад
+    monday.setDate(today.getDate() - daysFromMonday);
+    monday.setHours(0, 0, 0, 0);
+    
+    // Вычисляем воскресенье текущей недели
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    sunday.setHours(23, 59, 59, 999);
     
     return this.commonService.tasks().filter(task => 
-      !task.done && task.deadline && 
-      new Date(task.deadline) >= today && 
-      new Date(task.deadline) < nextWeek
-    ).length;
-  }
-
-  getNoDeadlineTasks(): number {
-    return this.commonService.tasks().filter(task => 
-      !task.done && !task.deadline
+      !task.done &&
+      task.deadline && 
+      new Date(task.deadline) >= monday && 
+      new Date(task.deadline) <= sunday
     ).length;
   }
 
